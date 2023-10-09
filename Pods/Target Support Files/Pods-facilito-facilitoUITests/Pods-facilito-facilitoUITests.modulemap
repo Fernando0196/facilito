@@ -1,0 +1,6 @@
+framework module Pods_facilito_facilitoUITests {
+  umbrella header "Pods-facilito-facilitoUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}

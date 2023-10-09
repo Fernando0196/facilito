@@ -1,0 +1,68 @@
+//
+//  IniciarSesionViewController.swift
+//  facilito
+//
+//  Created by iMac Mario on 4/10/22.
+//
+
+import UIKit
+import MaterialComponents.MaterialTextControls_FilledTextAreas
+import MaterialComponents.MaterialTextControls_FilledTextFields
+import MaterialComponents.MaterialTextControls_OutlinedTextAreas
+import MaterialComponents.MaterialTextControls_OutlinedTextFields
+
+class IniciarSesionViewController: UIViewController {
+    
+    @IBOutlet weak var tvTitulo: UITextView!
+    @IBOutlet weak var btnBackInicio: UIButton!
+    
+    @IBOutlet weak var btnContinuar: UIButton!
+    
+    @IBOutlet weak var lbCorreo: UILabel!
+    @IBOutlet weak var tfCorreo: UITextField!
+    
+    //var textController : MDCOutlinedTextField!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        btnBackInicio.roundButton()
+        btnContinuar.roundButton()
+        
+        tvTitulo.text = "¡Estamos \n muy felices!"
+
+      /*
+        let textField = MDCOutlinedTextField(frame: CGRect(x: 0, y: 15, width: self.view.frame.width, height: 15))
+        textField.label.text = "Correo"
+        textField.placeholder = "ejemplo@ejemplo.com"
+        textField.frame = CGRect(x: 37, y: 340, width: 301, height: 15)
+        textField.sizeToFit()
+        view.addSubview(textField)
+        
+        
+        let textField2 = MDCOutlinedTextField(frame: CGRect(x: 0, y: 15, width: self.view.frame.width, height: 15))
+        textField2.label.text = "Contraseña"
+        textField2.placeholder = "**********"
+        textField2.frame = CGRect(x: 37, y: 420, width: 301, height: 15)
+        textField2.sizeToFit()
+        view.addSubview(textField2)
+        
+        let textField3 = MDCOutlinedTextField(frame: CGRect(x: 0, y: 15, width: self.view.frame.width, height: 15))
+        textField3.label.text = "Repitir la contraseña"
+        textField3.placeholder = "**********"
+        textField3.frame = CGRect(x: 37, y: 500, width: 301, height: 15)
+        textField3.sizeToFit()
+        view.addSubview(textField3)
+        
+        */
+        
+    }
+    
+    
+
+
+
+
+
+    
+}

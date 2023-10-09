@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import GoogleMaps
+import ArcGIS
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -14,6 +16,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+
+        // Configura la clave de licencia ArcGIS
+        do {
+            try AGSArcGISRuntimeEnvironment.setLicenseKey("runtimelite,1000,rud3302802654,none,FA0RJAY3FP25Y7ZPM148")
+        } catch {
+            print("Error al configurar la licencia: \(error)")
+        }
+
+        // Configura la clave del mapa de Google
+        GMSServices.provideAPIKey("AIzaSyAW62lFMPaya0zxvjfDNkXSu16e5HTGoRo")
+
         return true
     }
 
