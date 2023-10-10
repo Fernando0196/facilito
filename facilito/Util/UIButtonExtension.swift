@@ -330,6 +330,13 @@ var backgroundView: UIView?
 var containerView: UIView?
 
 extension UIViewController {
+    func realizarLlamada(telefono: String) {
+        if let url = URL(string: "tel://\(telefono)"), UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        } else {
+            // Mostrar un mensaje de error o manejar la situación en caso de que no se pueda realizar la llamada.
+        }
+    }
     
     private struct AssociatedKeys {
         static var backgroundView: UIView?

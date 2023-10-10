@@ -109,7 +109,7 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
     var apellidoUsua: String = ""
     var correoUsua: String = ""
     var telefonoUsua: String = ""
-    
+    var telefonoBalon: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -334,7 +334,7 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
                                     f.nombreProducto = subJson["nombreProducto"].stringValue
                                     f.precioBalonGas = Double(subJson["precio"].stringValue) ?? 0.0
                                     self.precioBalon = Double(subJson["precio"].stringValue) ?? 0.0
-                                    
+                                    f.telefono = subJson["telefono"].stringValue
                                     let precioString = subJson["precio"].stringValue // Obtener el valor del precio como cadena
 
                                     if let precio = Double(precioString) {
@@ -391,7 +391,7 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
                                         iconImageView.image = UIImage(named: "ubi_verde")
                                     }
                                     else {
-                                        priceButton.backgroundColor = UIColor(hex: 0xFE3A46)
+                                        priceButton.backgroundColor = UIColor(hex: 0xF8BD00)
                                         iconImageView.image = UIImage(named: "ubi_amarillo")
                                     }
 
@@ -472,7 +472,7 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
         self.nombreEstablecimiento = balon.tituloMenu
         self.valoracionEstablecimiento = balon.valoracion
         self.direccionEstablecimiento =  balon.direccion
-        
+        self.telefonoBalon = balon.telefono
         return true
     }
     
@@ -561,5 +561,14 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
     }
     
 
+    @IBAction func llamar(_ sender: Any) {
+        // Verifica si self.telefonoBalon no es nulo ni vacío
+        if !self.telefonoBalon.isEmpty {
+            self.realizarLlamada(telefono: self.telefonoBalon)
+        } else {
+            // Manejar la situación en la que self.telefonoBalon está vacío
+            // Puedes mostrar un mensaje de error o tomar alguna otra acción apropiada.
+        }
+    }
     
 }

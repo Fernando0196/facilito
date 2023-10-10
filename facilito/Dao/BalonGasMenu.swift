@@ -19,6 +19,7 @@ public class BalonGasMenu {
     public var precioBalonGas: Double = 0.0
     public var codigoOsinergmin: String = ""
     public var direccion: String = ""
+    public var telefono: String = ""
 
 
     

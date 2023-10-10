@@ -10,8 +10,8 @@ import UIKit
 
 class correoempresaCell : UITableViewCell {
     
-
-    @IBOutlet weak var tvCorreo: UITextView!
+    
+    @IBOutlet weak var tvEmail: UITextView!
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)

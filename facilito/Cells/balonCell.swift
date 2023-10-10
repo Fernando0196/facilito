@@ -22,7 +22,7 @@ class balonCell : UITableViewCell {
     
     @IBOutlet weak var btnSeleccionarMenu: UIButton!
     
-    
+
     var precioGalon: Double = 0.0
     var precioMay: Double = 0.0
     var precioMen: Double = 0.0
