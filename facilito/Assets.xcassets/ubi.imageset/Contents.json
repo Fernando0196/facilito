@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "ubi.png",
+      "filename" : "ubic.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "ubic 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "ubic 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

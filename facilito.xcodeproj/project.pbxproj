@@ -51,6 +51,7 @@
 		575E28572ACFB9630077136A /* EmpresasInstaladorasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575E28562ACFB9630077136A /* EmpresasInstaladorasViewController.swift */; };
 		575E80A12A93FAA800C1F55B /* CuidadosElectricidadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575E80A02A93FAA800C1F55B /* CuidadosElectricidadViewController.swift */; };
 		57624B8429CCB8F100E62A77 /* PeligrosPostesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57624B8329CCB8F100E62A77 /* PeligrosPostesViewController.swift */; };
+		5768273F2AE70C93008BE2F4 /* PostesMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5768273E2AE70C93008BE2F4 /* PostesMenu.swift */; };
 		576A0DAF2ACF26CB00925E5F /* GasNaturalNoPasaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576A0DAE2ACF26CB00925E5F /* GasNaturalNoPasaViewController.swift */; };
 		576D1AC92ABD2DF300E3C8C5 /* TramitesDetalleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576D1AC82ABD2DF300E3C8C5 /* TramitesDetalleViewController.swift */; };
 		576D1ACB2ABD2F4E00E3C8C5 /* tramitesdetalleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576D1ACA2ABD2F4E00E3C8C5 /* tramitesdetalleCell.swift */; };
@@ -226,6 +227,7 @@
 		575E28562ACFB9630077136A /* EmpresasInstaladorasViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmpresasInstaladorasViewController.swift; sourceTree = "<group>"; };
 		575E80A02A93FAA800C1F55B /* CuidadosElectricidadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CuidadosElectricidadViewController.swift; sourceTree = "<group>"; };
 		57624B8329CCB8F100E62A77 /* PeligrosPostesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeligrosPostesViewController.swift; sourceTree = "<group>"; };
+		5768273E2AE70C93008BE2F4 /* PostesMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostesMenu.swift; sourceTree = "<group>"; };
 		576A0DAE2ACF26CB00925E5F /* GasNaturalNoPasaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GasNaturalNoPasaViewController.swift; sourceTree = "<group>"; };
 		576D1AC82ABD2DF300E3C8C5 /* TramitesDetalleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TramitesDetalleViewController.swift; sourceTree = "<group>"; };
 		576D1ACA2ABD2F4E00E3C8C5 /* tramitesdetalleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tramitesdetalleCell.swift; sourceTree = "<group>"; };
@@ -617,6 +619,7 @@
 				57FC1E282AC0101300681CF7 /* ContratosDetalleMenu.swift */,
 				574500762AD050C3007CB7EB /* EmpresasInstMenu.swift */,
 				577101D92AD0A2A500BBC403 /* EmpresasInstDetaMenu.swift */,
+				5768273E2AE70C93008BE2F4 /* PostesMenu.swift */,
 			);
 			path = Dao;
 			sourceTree = "<group>";
@@ -952,6 +955,7 @@
 				57C0BAC729A7D16700CC16BE /* InterrupcionServicioViewController.swift in Sources */,
 				57DCECE928EC8AA700E91F70 /* ViewController.swift in Sources */,
 				57C0BABB29A6B59600CC16BE /* ElectricidadViewController.swift in Sources */,
+				5768273F2AE70C93008BE2F4 /* PostesMenu.swift in Sources */,
 				576A0DAF2ACF26CB00925E5F /* GasNaturalNoPasaViewController.swift in Sources */,
 				57DCED1A28EC9E8200E91F70 /* UIButtonExtension.swift in Sources */,
 				57A24EF6299FD8B20083C3D9 /* ReciboExcesivoViewController.swift in Sources */,

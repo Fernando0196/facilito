@@ -14,6 +14,9 @@ import GoogleMaps
 
 class ElectricidadViewController: UIViewController , CLLocationManagerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
+    var vObtenerDireccion: ObtenerDireccionViewController!
+
+    
     let locationManager = CLLocationManager()
     let geocoder = CLGeocoder()
     
@@ -75,20 +78,31 @@ class ElectricidadViewController: UIViewController , CLLocationManagerDelegate, 
     
     var nombreReporte: String = ""
     let dropDown = DropDown()
-    let tiposReporte = ["Reportar recibo excesivo","Interrupción de servicio eléctrico","Reportar alumbrado público","Daño de artefactos eléctricos","Peligro por cables o postes caídos"]
+    let tiposReporte = ["Interrupción de servicio eléctrico","Reportar alumbrado público","Daño de artefactos eléctricos","Peligro por cables o postes caídos"]
     var isDropDownVisible = false
     
     let imagePicker = UIImagePickerController()
     
     @IBOutlet weak var ivArchivo1: UIImageView!
     @IBOutlet weak var ivArchivo2: UIImageView!
+    @IBOutlet weak var vImagen1: UIView!
+    @IBOutlet weak var vImagen2: UIView!
+    
+    @IBOutlet weak var btnCancel1: UIButton!
+    @IBOutlet weak var btnCancel2: UIButton!
     
     var foto1: String = ""
     var foto2: String = ""
+    var buscarUbi: Int = 0
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        btnCancel1.isHidden = true
+        btnCancel2.isHidden = true
+        vImagen2.isHidden = true
+        
         btnBack.roundButton()
         btnMenuUsuario.roundButton()
         
@@ -181,10 +195,23 @@ class ElectricidadViewController: UIViewController , CLLocationManagerDelegate, 
         //hcDireccion.constant = 0
         self.svSiNo.alpha = 0
         
+        /*
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
+        */
+        
+        if let direccionText = self.vObtenerDireccion?.direccion {
+            tfDireccion?.text = direccionText
+        } else {
+            
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.requestWhenInUseAuthorization()
+            locationManager.startUpdatingLocation()
+        }
+        
         
     }
     
@@ -209,19 +236,7 @@ class ElectricidadViewController: UIViewController , CLLocationManagerDelegate, 
     @IBAction func swSiNo(_ sender: UISwitch) {
         sender.preventRepeatedPresses()
         
-        if (!self.swSiNo.isOn) {
-            //No
-            //hcDireccion.constant = 0
-
-            //Quitar altura
-            hSiNo.constant = 0
-            svSiNo.isHidden = true
-            self.svSiNo.alpha = 0
-
-            tfDireccion.becomeFirstResponder()
-
-        }
-        else{
+        if (self.swSiNo.isOn) {
             //Sí
             //Agregar altura
             hSiNo.constant = 161
@@ -238,7 +253,20 @@ class ElectricidadViewController: UIViewController , CLLocationManagerDelegate, 
             tfNombre.becomeFirstResponder()
 
         }
+        else{
+            //No
+            //hcDireccion.constant = 0
+            //Quitar altura
+            hSiNo.constant = 0
+            svSiNo.isHidden = true
+            self.svSiNo.alpha = 0
+
+            tfDireccion.becomeFirstResponder()
+            
+        }
     }
+    
+    
     @IBAction func cargarImagenButtonTapped(_ sender: UIButton) {
         let alertController = UIAlertController(title: "Seleccionar Imágenes", message: nil, preferredStyle: .actionSheet)
         
@@ -287,19 +315,66 @@ class ElectricidadViewController: UIViewController , CLLocationManagerDelegate, 
         
         if ivArchivo1.image == nil {
             ivArchivo1.image = selectedImage
+            ivArchivo1.contentMode = .scaleAspectFill
+            ivArchivo1.clipsToBounds = true
             foto1 = base64String
+            
+            // Configurar vImagen1 para mostrar la imagen
+            vImagen1.isHidden = false
+            vImagen2.isHidden = false
+            ivArchivo1.isHidden = false
+            btnCancel1.isHidden = false
+            ivArchivo1.isUserInteractionEnabled = true
             
         } else {
             ivArchivo2.image = UIImage(data: imageData)
+            ivArchivo2.contentMode = .scaleAspectFill
+            ivArchivo2.clipsToBounds = true
             foto2 = base64String
+            
+            // Configurar vImagen2 para mostrar la imagen
+            vImagen2.isHidden = false
+            vImagen1.isHidden = false
+            ivArchivo2.isHidden = false
+            btnCancel2.isHidden = false
+            ivArchivo2.isUserInteractionEnabled = true
         }
         
         dismiss(animated: true, completion: nil)
     }
     
+    @IBAction func ocultarImagen1(_ sender: Any) {
+        ivArchivo1.image = nil 
+        ivArchivo1.isHidden = true
+        btnCancel1.isHidden = true
+        foto1 = ""
+        ivArchivo1.isUserInteractionEnabled = false
+        
+        if ivArchivo1.image == nil && ivArchivo2.image == nil {
+            vImagen1.isHidden = false
+            vImagen2.isHidden = true
+
+        }
+    }
     
+    @IBAction func ocultarImagen2(_ sender: Any) {
+        ivArchivo2.image = nil
+        ivArchivo2.isHidden = true
+        btnCancel2.isHidden = true
+        foto2 = ""
+        ivArchivo2.isUserInteractionEnabled = false
+
+        if ivArchivo1.image == nil && ivArchivo2.image == nil {
+            vImagen1.isHidden = false
+            vImagen2.isHidden = true
+        }
+    }
     
-  
+    @IBAction func abrirMapa(_ sender: Any) {
+        self.buscarUbi = 1
+        self.performSegue(withIdentifier: "sgMapa", sender: self)
+
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
@@ -327,7 +402,11 @@ class ElectricidadViewController: UIViewController , CLLocationManagerDelegate, 
             //
             
         }
-
+        if (segue.identifier == "sgMapa") {
+            let vc = segue.destination as! ObtenerDireccionViewController
+            vc.vRecibo = self
+        }
+        
     }
 
 }

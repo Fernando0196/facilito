@@ -92,6 +92,7 @@ class TuberiasExpuestasViewController: UIViewController, UITextFieldDelegate, CL
     //var listaFotos: [String] = []
     var nombreEmpresa = ""
     var listaFotos: [String] = []
+    var buscarUbi = 0
 
     
     override func viewDidLoad() {
@@ -215,6 +216,7 @@ class TuberiasExpuestasViewController: UIViewController, UITextFieldDelegate, CL
     
 
     @IBAction func abrirMapa(_ sender: Any) {
+        self.buscarUbi = 1
         self.performSegue(withIdentifier: "sgMapa", sender: self)
 
     }
@@ -404,7 +406,7 @@ class TuberiasExpuestasViewController: UIViewController, UITextFieldDelegate, CL
         }
         if (segue.identifier == "sgMapa") {
             let vc = segue.destination as! ObtenerDireccionViewController
-           // vc.vParent = self
+            vc.vTuberiasExpuestas = self
         }
         if (segue.identifier == "sgPrevioReporte") {
             let vc = segue.destination as! PrevioReporteViewController

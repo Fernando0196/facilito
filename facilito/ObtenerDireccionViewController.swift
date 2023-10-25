@@ -17,6 +17,13 @@ import DropDown
 
 class ObtenerDireccionViewController: UIViewController, UITextFieldDelegate, CLLocationManagerDelegate, GMSMapViewDelegate {
 
+    var vTuberiasExpuestas: TuberiasExpuestasViewController!
+    var vRecibo: ElectricidadViewController!
+    var vInterrupcion: InterrupcionServicioViewController!
+    var vDanio: DanoArtefactoViewController!
+    var vPeligro: PeligrosPostesViewController!
+
+    
     var locationManager = CLLocationManager()
     var initialLocationMarker: GMSMarker?
     var markers: [GMSMarker] = []
@@ -40,6 +47,8 @@ class ObtenerDireccionViewController: UIViewController, UITextFieldDelegate, CLL
     var displayMessage: String = ""
     var displayTitle: String = "Facilito"
     var direccion: String = ""
+    var verMapaTuberias: Int = 0
+    var verMapaRecibos: Int = 0
 
     
     override func viewDidLoad() {
@@ -63,7 +72,26 @@ class ObtenerDireccionViewController: UIViewController, UITextFieldDelegate, CLL
         initialLocationMarker?.icon = UIImage(systemName: "location.circle")
         initialLocationMarker?.map = mapView // Muestra el marcador en el mapa
         
-        
+        if let vTuberiasExpuestas = vTuberiasExpuestas {
+            // Realiza la igualación o el procesamiento que deseas con vTuberiasExpuestas
+            verMapaTuberias = vTuberiasExpuestas.buscarUbi
+        }
+        if let vRecibo = vRecibo {
+            // Realiza la igualación o el procesamiento que deseas con vTuberiasExpuestas
+            verMapaRecibos = vRecibo.buscarUbi
+        }
+        if let vInterrupcion = vInterrupcion {
+            // Realiza la igualación o el procesamiento que deseas con vTuberiasExpuestas
+            verMapaRecibos = vInterrupcion.buscarUbi
+        }
+        if let vDanio = vDanio {
+            // Realiza la igualación o el procesamiento que deseas con vTuberiasExpuestas
+            verMapaRecibos = vDanio.buscarUbi
+        }
+        if let vPeligro = vPeligro {
+            // Realiza la igualación o el procesamiento que deseas con vTuberiasExpuestas
+            verMapaRecibos = vPeligro.buscarUbi
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -191,9 +219,22 @@ class ObtenerDireccionViewController: UIViewController, UITextFieldDelegate, CLL
     }
     
     @IBAction func obetenerDireccion(_ sender: Any) {
-        self.performSegue(withIdentifier: "sgUbicacion", sender: self)
 
-        
+        if verMapaTuberias == 1 {
+            self.performSegue(withIdentifier: "sgUbicacion", sender: self)
+        }
+        if verMapaRecibos == 1 {
+            self.performSegue(withIdentifier: "sgRecibosE", sender: self)
+        }
+        if verMapaRecibos == 1 {
+            self.performSegue(withIdentifier: "sgInterrupcionE", sender: self)
+        }
+        if verMapaRecibos == 1 {
+            self.performSegue(withIdentifier: "sgDanioE", sender: self)
+        }
+        if verMapaRecibos == 1 {
+            self.performSegue(withIdentifier: "sgPeligrosE", sender: self)
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -206,8 +247,22 @@ class ObtenerDireccionViewController: UIViewController, UITextFieldDelegate, CLL
             let vc = segue.destination as! TuberiasExpuestasViewController
             vc.vObtenerDireccion = self
         }
-
-        
+        if (segue.identifier == "sgRecibosE") {
+            let vc = segue.destination as! ElectricidadViewController
+            vc.vObtenerDireccion = self
+        }
+        if (segue.identifier == "sgInterrupcionE") {
+            let vc = segue.destination as! InterrupcionServicioViewController
+            vc.vObtenerDireccion = self
+        }
+        if (segue.identifier == "sgDanioE") {
+            let vc = segue.destination as! DanoArtefactoViewController
+            vc.vObtenerDireccion = self
+        }
+        if (segue.identifier == "sgPeligrosE") {
+            let vc = segue.destination as! PeligrosPostesViewController
+            vc.vObtenerDireccion = self
+        }
     }
     
 //Fin clase

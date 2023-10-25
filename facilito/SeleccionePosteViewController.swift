@@ -38,6 +38,7 @@ class SeleccionePosteViewController: UIViewController, UITextFieldDelegate, CLLo
     @IBOutlet weak var btnBack: UIButton!
     @IBOutlet weak var mapView: GMSMapView!
     @IBOutlet weak var vPostesSeleccionados: UIView!
+    @IBOutlet weak var btnUbicacion: UIButton!
     
     @IBOutlet weak var btnContinuar: UIButton!
     @IBOutlet weak var tvPostes: UITextView!
@@ -46,15 +47,32 @@ class SeleccionePosteViewController: UIViewController, UITextFieldDelegate, CLLo
     @IBOutlet weak var svOptions: UIStackView!
     
     var locationManager = CLLocationManager()
+    var userLocationMarker: GMSMarker?
+    
+    var codProvincia: String = ""
+    var codDepartamento: String = ""
 
     var nombreReporte: String = ""
-
+    var displayMessage: String = ""
+    var displayTitle: String = "Facilito"
+    var lonPrincipal: String = ""
+    var latPrincipal: String = ""
 
     let dropDown = DropDown()
     
-    let tiposReporte = ["Reportar recibo excesivo","Interrupción de servicio eléctrico","Reportar alumbrado público","Daño de artefactos eléctricos","Peligro por postes o cables"]
+    let tiposReporte = ["Reportar recibo excesivo","Interrupción de servicio eléctrico","Daño de artefactos eléctricos","Peligro por cables o postes caídos"]
     
+    var filtroDistrito: String = ""
+    var latitud: String = ""
+    var longitud: String = ""
+    var ubigeo: String = ""
     
+    var postes: [PostesMenu] = [PostesMenu]()
+    var df : PostesMenu!
+    
+    var selectedPostes: [PostesMenu] = []
+    var posteMarkers: [GMSMarker] = []
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -68,7 +86,7 @@ class SeleccionePosteViewController: UIViewController, UITextFieldDelegate, CLLo
         btnLlamar.roundButton()
         btnDenuncias.roundButton()
         btnCuidados.roundButton()
-        
+        btnUbicacion.roundButton()
         btnReportar.layer.cornerRadius = 5        
         
         vPostesSeleccionados.layer.shadowColor = UIColor.gray.cgColor
@@ -77,20 +95,16 @@ class SeleccionePosteViewController: UIViewController, UITextFieldDelegate, CLLo
         vPostesSeleccionados.layer.shadowOpacity = 0.5
         vPostesSeleccionados.layer.cornerRadius = 12
         tvPostes.layer.cornerRadius = 7
-        
-        
-        // Configura el locationManager
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
-        
+
         mapView.addSubview(vPostesSeleccionados)
-        
+        mapView.delegate = self
+
         //btnTipoPeligro.addTarget(self, action: #selector(toggleDropDown), for: .touchUpInside)
         btnReportar.translatesAutoresizingMaskIntoConstraints = false
 
-
-
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
         
         dropDown.anchorView = btnReportar
         dropDown.dataSource = tiposReporte
@@ -107,52 +121,293 @@ class SeleccionePosteViewController: UIViewController, UITextFieldDelegate, CLLo
             let attributes: [NSAttributedString.Key: Any] = [.font: buttonFont]
             let attributedString = NSAttributedString(string: self.nombreReporte, attributes: attributes)
             btnReportar.setAttributedTitle(attributedString, for: .normal)
+            
+            
+            if (self.nombreReporte == "Reportar recibo excesivo"){
+                self.performSegue(withIdentifier: "sgReciboE", sender: self)
+            }
+
+            if (self.nombreReporte == "Daño de artefactos eléctricos"){
+                self.performSegue(withIdentifier: "sgDanioE", sender: self)
+            }
+            if (self.nombreReporte == "Interrupción de servicio eléctrico"){
+                self.performSegue(withIdentifier: "sgInterrupcionE", sender: self)
+            }
+            if (self.nombreReporte == "Peligro por cables o postes caídos"){
+                self.performSegue(withIdentifier: "sgPostesE", sender: self)
+            }
+            
         }
-        // Configurar el UITextField
         tfTipoReporte.borderStyle = .roundedRect
         tfTipoReporte.translatesAutoresizingMaskIntoConstraints = false
         
-        // Configurar el UIImageView
-        ivIcon.image = UIImage(named: "down") // Imagen inicial cuando el desplegable está cerrado
+        ivIcon.image = UIImage(named: "down")
         ivIcon.contentMode = .scaleAspectFit
         ivIcon.translatesAutoresizingMaskIntoConstraints = false
 
         ivIcon.leadingAnchor.constraint(equalTo: btnReportar.trailingAnchor, constant: 8).isActive = true
         ivIcon.centerYAnchor.constraint(equalTo: btnReportar.centerYAnchor).isActive = true
         
-
+        
+        
   }
     
-    // Función que se llama cuando se actualiza la ubicación
+    var isFirstMapLoad = true
+
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        // Obtiene la última ubicación conocida del dispositivo
         guard let location = locations.last else { return }
 
-        // Crea una instancia de GMSCameraPosition con la ubicación actual
-        let camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: 15)
-        
-        let marker = GMSMarker(position: location.coordinate)
+        if isFirstMapLoad {
+            longitud = String(location.coordinate.longitude)
+            latitud = String(location.coordinate.latitude)
+            lonPrincipal = longitud
+            latPrincipal = latitud
 
-        // Establece el título y la descripción del marcador
-        marker.title = "Mi ubicación"
-        marker.snippet = "Aquí estoy"
+            isFirstMapLoad = false
 
-        // Carga el icono del marcador
-        marker.icon = UIImage(named: "marker")
+            let camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: 19)
+            mapView.camera = camera
 
-        // Agrega el marcador al mapa
-        marker.map = mapView
-        // Establece la cámara del mapa en la posición actual
-        mapView.animate(with: GMSCameraUpdate.setCamera(camera))
-
-        // Detiene la actualización de la ubicación
-        locationManager.stopUpdatingLocation()
-        
+            // Asegúrate de que el marcador de ubicación esté presente en el mapa en todo momento
+            if userLocationMarker == nil {
+                let marker = GMSMarker(position: location.coordinate)
+                marker.title = "Mi ubicación"
+                marker.snippet = "Aquí estoy"
+                marker.icon = UIImage(named: "marker")
+                marker.map = mapView
+                userLocationMarker = marker
+            }
+        }
     }
+
+
+    var latitudCentro: Double = 0.0
+    var longitudCentro: Double = 0.0
+    var ultimaLatitud: Double = 0.0
+    var ultimaLongitud: Double = 0.0
+    var distanciaMinima: Double = 85.0
+
+    func mapView(_ mapView: GMSMapView, idleAt cameraPosition: GMSCameraPosition) {
+        let centerLatitude = cameraPosition.target.latitude
+        let centerLongitude = cameraPosition.target.longitude
+
+        if isFirstMapLoad == false {
+            self.latitud = latPrincipal
+            self.longitud = lonPrincipal
+            let camera = GMSCameraPosition.camera(withLatitude: Double(latPrincipal) ?? 0.0, longitude: Double(lonPrincipal) ?? 0.0, zoom: 19)
+            mapView.camera = camera
+            isFirstMapLoad = true
+        } else {
+            self.latitud = String(format: "%.6f", centerLatitude)
+            self.longitud = String(format: "%.6f", centerLongitude)
+        }
+
+        let distancia = calcularDistancia(latitud1: centerLatitude, longitud1: centerLongitude, latitud2: latitudCentro, longitud2: longitudCentro)
+        let distanciaUltimaUbicacion = calcularDistancia(latitud1: centerLatitude, longitud1: centerLongitude, latitud2: ultimaLatitud, longitud2: ultimaLongitud)
+        if distancia >= distanciaMinima && distanciaUltimaUbicacion >= distanciaMinima {
+            obtenerCoordenadas()
+        }
+
+        ultimaLatitud = centerLatitude
+        ultimaLongitud = centerLongitude
+    }
+
+    func calcularDistancia(latitud1: Double, longitud1: Double, latitud2: Double, longitud2: Double) -> Double {
+        let location1 = CLLocation(latitude: latitud1, longitude: longitud1)
+        let location2 = CLLocation(latitude: latitud2, longitude: longitud2)
+        return location1.distance(from: location2)
+    }
+    
+    private func obtenerCoordenadas() {
+        
+        let ac = APICaller()
+        self.showActivityIndicatorWithText(msg: "Cargando...", true, 200)
+        ac.PostConsultarUbigeo(latitud,longitud, completion: { (success, result, code) in
+            self.hideActivityIndicatorWithText()
+            if (success && code == 200) {
+                if let dataFromString = result!.data(using: .utf8, allowLossyConversion: false) {
+                     do {
+                        let json = try JSON(data: dataFromString)
+                         
+                         if !json["empresaConcesionariaOutRO"]["ubigeo"].stringValue.isEmpty {
+                             
+                             self.ubigeo = json["empresaConcesionariaOutRO"]["ubigeo"].stringValue
+                             self.codDepartamento = String(self.ubigeo.prefix(2))
+                             self.codProvincia = String(self.ubigeo.suffix(4).prefix(2))
+                             print("codDepartamento: " + self.codDepartamento)
+                             print("codProvincia: " + self.codProvincia)
+                             self.listarPostes()
+                         }
+                          else {
+                              self.displayMessage = "No se pudo obetener, vuelve a intentar"
+                            self.performSegue(withIdentifier: "sgDM", sender: self)
+                        }
+                    } catch {
+                        self.displayMessage = "No se pudo obetener, vuelve a intentar"
+                        self.performSegue(withIdentifier: "sgDM", sender: self)
+                    }
+                } else {
+                    self.displayMessage = "No se pudo obetener, vuelve a intentar"
+                    self.performSegue(withIdentifier: "sgDM", sender: self)
+                }
+            } else {
+                debugPrint("error")
+                self.displayMessage = "No se pudo obetener, vuelve a intentar"
+                self.performSegue(withIdentifier: "sgDM", sender: self)
+            }
+
+        })
+    }
+    
+    private func listarPostes() {
+        let latitud =  self.latitud
+        let longitud = self.longitud
+        let radio = "100C"
+        let idEmpresa = "2"
+        let ubigeo = self.ubigeo
+ 
+        let ac = APICaller()
+        self.showActivityIndicatorWithText(msg: "Cargando...", true, 200)
+        ac.GetPostes(latitud: latitud, longitud: longitud, radio: radio, idEmpresa: idEmpresa, ubigeo: ubigeo) { (success, result, code) in            self.hideActivityIndicatorWithText()
+            debugPrint(result!)
+            if (success && code == 200) {
+                    if let dataFromString = result!.data(using: .utf8, allowLossyConversion: false) {
+                        do {
+                           let json = try JSON(data: dataFromString)
+                            self.postes.removeAll()
+                            if !json["postes"]["postes"].arrayValue.isEmpty {
+                                let jRecords = json["postes"]["postes"].arrayValue
+                                
+                                for (_, subJson) in jRecords.enumerated() {
+                                    let f = PostesMenu()
+                                    
+                                    f.codApEmpresa = subJson["codApEmpresa"].stringValue
+                                    f.latitudPoste = subJson["latitud"].stringValue
+                                    f.longitudPoste = subJson["longitud"].stringValue
+                                    self.postes.append(f)
+                                }
+
+                                let userLocationMarker = self.userLocationMarker
+                                self.mapView.clear()
+                                if let userMarker = userLocationMarker {
+                                    userMarker.map = self.mapView
+                                }
+                                print("Total postes: \(self.postes.count)")
+                                
+                                for poste in self.postes {
+                                    let latitud = Double(poste.latitudPoste) ?? 0.0
+                                    let longitud = Double(poste.longitudPoste) ?? 0.0
+                                    let customMarkerView = UIView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+                                
+                                    if let iconImage = UIImage(named: "poste") {
+                                        let imageView = UIImageView(frame: customMarkerView.bounds)
+                                        imageView.image = iconImage
+                                        customMarkerView.addSubview(imageView)
+                                    }
+
+                                    let marker = GMSMarker(position: CLLocationCoordinate2D(latitude: latitud, longitude: longitud))
+                                    marker.iconView = customMarkerView
+                                    marker.map = self.mapView
+                                    marker.userData = poste
+                                    marker.isTappable = true
+                                    marker.map = self.mapView
+                                }
+                                
+                                if let userMarker = userLocationMarker {
+                                    userMarker.map = self.mapView
+                                }
+                                
+                                self.tvPostes.text = ""
+
+                            }
+                             else {
+                                 self.displayMessage = "No se pudo obtener, vuelve a intentar"
+                               self.performSegue(withIdentifier: "sgDM", sender: self)
+                           }
+                       }  catch {
+                            self.displayMessage = "No se pudo obtener, vuelve a intentar"
+                            self.performSegue(withIdentifier: "sgDM", sender: self)
+                        }
+                    } else {
+                        self.displayMessage = "No se pudo obtener, vuelve a intentar"
+                        self.performSegue(withIdentifier: "sgDM", sender: self)
+                    }
+                } else {
+                    debugPrint("error")
+                    self.displayMessage = "No se pudo obtener, vuelve a intentar"
+                    self.performSegue(withIdentifier: "sgDM", sender: self)
+                }
+            }
+    }
+
+    var selectedMarkers: [GMSMarker] = []
+
+    func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+        if let poste = marker.userData as? PostesMenu {
+            if selectedMarkers.contains(marker) {
+                tvPostes.text = tvPostes.text.replacingOccurrences(of: "\(poste.codApEmpresa), ", with: "")
+                selectedMarkers.removeAll { $0 == marker }
+            } else {
+                tvPostes.text += "\(poste.codApEmpresa), "
+                selectedMarkers.append(marker)
+            }
+         
+            let iconName = selectedMarkers.contains(marker) ? "poste_select" : "poste"
+            if let iconImage = UIImage(named: iconName) {
+                let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+                imageView.image = iconImage
+                marker.iconView = imageView
+            }
+
+            return true
+        }
+        return false
+    }
+
+    
+    @IBAction func centrarUbicacion(_ sender: UIButton) {
+
+        if let location = locationManager.location {
+            let camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: 19)
+            print("Longitud: \(location.coordinate.longitude)")
+              print("Latitud: \(location.coordinate.latitude)")
+            mapView.animate(with: GMSCameraUpdate.setCamera(camera))
+        }
+    }
+
     
     
     @IBAction func mostrarTiposDenuncia(_ sender: Any) {
         dropDown.show()
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+
+        if (segue.identifier == "sgInterrupcionE") {
+            let vc = segue.destination as! InterrupcionServicioViewController
+            //vc.vBalonGasMapa = self
+            //
+            
+        }
+        if (segue.identifier == "sgDanioE") {
+            let vc = segue.destination as! DanoArtefactoViewController
+            //vc.vBalonGasMapa = self
+            //
+            
+        }
+        if (segue.identifier == "sgReciboE") {
+            let vc = segue.destination as! ElectricidadViewController
+            //vc.vBalonGasMapa = self
+            //
+        }
+        if (segue.identifier == "sgReportarAlumbradoE") {
+            let vc = segue.destination as! SeleccionePosteViewController
+            //vc.vBalonGasMapa = self
+            //
+            
+        }
+
+    }
+    
     
 }

@@ -40,25 +40,36 @@ class balonCell : UITableViewCell {
         btnLlamar.roundButton()
 
         configurePrecioButton()
+        btnPrecio.addShadowOnBottom()
+        btnLlamar.addShadowOnBottom()
     }
 
     func configurePrecioButton() {
         var buttonBackgroundColor: UIColor
+        var borderColor: UIColor
+
         var fontSize: CGFloat
 
         if self.precioGalon == self.precioMay {
             buttonBackgroundColor = UIColor(hex: 0xFE3A46)
+            borderColor = UIColor(hex: 0xFE3A46)
+
             fontSize = 18
         } else if precioGalon == self.precioMen {
             buttonBackgroundColor = UIColor(hex: 0x029F1D)
+            borderColor = UIColor(hex: 0x029F1D)
+
             fontSize = 18
         } else {
             buttonBackgroundColor = UIColor(hex: 0xF8BD02)
+            borderColor = UIColor(hex: 0xF8BD02)
+
             fontSize = 18
         }
         
         // Establecer el fondo de color personalizado
         btnPrecio.backgroundColor = buttonBackgroundColor
+        btnPrecio.borderColor = borderColor
 
         // Crear un estilo de texto con un salto de línea después de "S/"
         let paragraphStyle = NSMutableParagraphStyle()

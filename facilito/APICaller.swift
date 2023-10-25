@@ -16,6 +16,10 @@ class APICaller {
     let serverUrl = "https://wsfacilito.osinergmin.gob.pe/facilito_rest_old/remote" //DEV
     
     let URL_DESARROLLO_MICROSERVICIOS: String
+    let URL_PRODUCCION_MICROSERVICIOS: String
+    let URL_USADA: String
+    
+    
     let URL_CONTRATOS: String
 
     let BASE_URL_MICROSERVICIO_GRIFOS: String
@@ -27,23 +31,44 @@ class APICaller {
     let BASE_URL_MICROSERVICIO_DENUNCIAS: String
     let BASE_URL_MICROSERVICIO_DENUNCIAS_INCORFORMIDAD: String
     let BASE_URL_MICROSERVICIO_GAS_NATURAL: String
+    let BASE_URL_MICROSERVICIO_UBIGEO: String
 
     
     let TERMINAL_CREACION =  "11.160.121.132";
     
     init() {
+        
         URL_DESARROLLO_MICROSERVICIOS = "http://11.160.121.132:30001/"
+        URL_PRODUCCION_MICROSERVICIOS = "https://facilitointegrado.osinergmin.gob.pe/"
+        
         URL_CONTRATOS = "https://masigas.osinergmin.gob.pe/gnr-api/"
+        
+        self.URL_USADA = self.URL_DESARROLLO_MICROSERVICIOS
+        
         
         BASE_URL_MICROSERVICIO_GRIFOS = URL_DESARROLLO_MICROSERVICIOS + "facilito_grifo/api"
         BASE_URL_MICROSERVICIO_AUTENTICACION = URL_DESARROLLO_MICROSERVICIOS + "facilito_auth/api/autenticacion"
-        BASE_URL_MICORSERVICIO_USUARIO = URL_DESARROLLO_MICROSERVICIOS + "facilito_usuario/api";
+        BASE_URL_MICORSERVICIO_USUARIO = URL_DESARROLLO_MICROSERVICIOS + "facil_usuario/api";
         BASE_URL_MICROSERVICIO_BALON_GAS = URL_DESARROLLO_MICROSERVICIOS + "facilito_balon_gas/api";
         BASE_URL_MICROSERVICIO_ESTABLECIMIENTOS = URL_DESARROLLO_MICROSERVICIOS + "facil_locales/api";
         BASE_URL_MICROSERVICIO_BALONCITO = URL_DESARROLLO_MICROSERVICIOS + "facilito_baloncito/api"
         BASE_URL_MICROSERVICIO_DENUNCIAS = URL_DESARROLLO_MICROSERVICIOS + "facilito_denuncia/api";
         BASE_URL_MICROSERVICIO_DENUNCIAS_INCORFORMIDAD = URL_DESARROLLO_MICROSERVICIOS + "facil_denuncia/api";
         BASE_URL_MICROSERVICIO_GAS_NATURAL = URL_DESARROLLO_MICROSERVICIOS + "facilito_gas_natural/api"
+        BASE_URL_MICROSERVICIO_UBIGEO = URL_DESARROLLO_MICROSERVICIOS + "facilito_ubigeo/api"
+        
+        /*
+        BASE_URL_MICROSERVICIO_GRIFOS = URL_USADA + "facil-grifo/api"
+        BASE_URL_MICROSERVICIO_AUTENTICACION = URL_USADA + "facilito-auth/api/autenticacion"
+        BASE_URL_MICORSERVICIO_USUARIO = URL_USADA + "facil-usuario/api"
+        BASE_URL_MICROSERVICIO_BALON_GAS = URL_USADA + "facil-balon-g/api"
+        BASE_URL_MICROSERVICIO_ESTABLECIMIENTOS = URL_USADA + "facil-locales/api"
+        BASE_URL_MICROSERVICIO_BALONCITO = URL_USADA + "facil-baloncito/api"
+        BASE_URL_MICROSERVICIO_DENUNCIAS = URL_USADA + "facil-denuncia/api"
+        BASE_URL_MICROSERVICIO_DENUNCIAS_INCORFORMIDAD = URL_USADA + "facil_denuncia/api"
+        BASE_URL_MICROSERVICIO_GAS_NATURAL = URL_USADA + "facil-g-natural/api"
+        BASE_URL_MICROSERVICIO_UBIGEO = URL_USADA + "facil-ubigeo/api"
+        */
         
     }
     
@@ -129,6 +154,46 @@ class APICaller {
         "\"correo\": \"" + correo + "\",\n" +
         "}\n" +
         "}\n"
+        
+        debugPrint(payload)
+        
+        var urlRequest = URLRequest(url: URL(string: url)!)
+        urlRequest.httpMethod = HTTPMethod.post.rawValue
+        
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        urlRequest.httpBody = payload.data(using: String.Encoding.utf8)
+        
+        SecurityCertificateManager.sharedInstance.defaultManager.request(urlRequest)
+            .responseString { (response) in
+                if (response.error == nil) {
+                    let stringResponse: String = (String(data: response.data!, encoding: String.Encoding.utf8) as String?)!
+                    if (!stringResponse.isEmpty) {
+                        completion(true, stringResponse, response.response?.statusCode)
+                    } else {
+                        completion(false, "", -1)
+                    }
+                } else {
+                    completion(false, "", 0)
+                }
+        }
+    }
+    
+    func PostEditarPerfil(token: String, correo: String, nombre: String, apellidos: String, nroDocumento: String, telefono: String, tipoEdicion: String, completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
+        
+        let url = "\(BASE_URL_MICORSERVICIO_USUARIO)/usuario/editar"
+
+        let payload = "{" +
+            "\"usuarioEdit\": {" +
+            "\"correo\": \"\(correo)\"," +
+            "\"token\": \"\(token)\"," +
+            "\"nombre\": \"\(nombre)\"," +
+            "\"apellidos\": \"\(apellidos)\"," +
+            "\"nroDocumento\": \"\(nroDocumento)\"," +
+            "\"telefono\": \"\(telefono)\"," +
+            "\"tipoEdicion\": \"\(tipoEdicion)\"" +
+            "}" +
+            "}"
         
         debugPrint(payload)
         
@@ -276,11 +341,13 @@ class APICaller {
     }
     
     func PostConsultarUbigeo( _ latitud: String,_ longitud: String, completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
-        let url = "\(BASE_URL_MICROSERVICIO_DENUNCIAS)/concesionaria/consultarCoordenada"
+        let url = "\(BASE_URL_MICROSERVICIO_DENUNCIAS_INCORFORMIDAD)/concesionaria/consultarCoordenada"
 
         let payload = "{\n" +
-            "    \"coordenada_y\": \"\(latitud)\",\n" +
-            "    \"coordenada_x\": \"\(longitud)\"\n" +
+            "    \"empresa\": {\n" +
+            "        \"coordenada_x\": \"\(longitud)\",\n" +
+            "        \"coordenada_y\": \"\(latitud)\"\n" +
+            "    }\n" +
             "}"
         
         debugPrint(payload)
@@ -310,9 +377,9 @@ class APICaller {
      
     func GetListarBalonGas(_ categoria: String,_ latitud: String,_ longitud: String,_ distancia: String,_ idFamiliaGrifo: String,_ ubigeo: String,_ calificacion: Double,_ minPrecio: Double,_ maxPrecio: Double,_ marca: String,_ tipoPago: String,_ variable: String,_ tiempo: String, completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
         
-        let ubig = "-"
+        //let ubig = "-"
         
-        let url = "\(BASE_URL_MICROSERVICIO_ESTABLECIMIENTOS)/googleMap/listLocales/\(categoria)/\(latitud)/\(longitud)/\(distancia)/\(idFamiliaGrifo)/\(ubig)/\(calificacion)/\(minPrecio)/\(maxPrecio)/\(marca)/\(tipoPago)/\(variable)/\(tiempo)"
+        let url = "\(BASE_URL_MICROSERVICIO_ESTABLECIMIENTOS)/googleMap/listLocales/\(categoria)/\(latitud)/\(longitud)/\(distancia)/\(idFamiliaGrifo)/\(ubigeo)/\(calificacion)/\(minPrecio)/\(maxPrecio)/\(marca)/\(tipoPago)/\(variable)/\(tiempo)"
 
         var urlRequest = URLRequest(url: URL(string: url)!)
         urlRequest.httpMethod = HTTPMethod.get.rawValue
@@ -363,26 +430,6 @@ class APICaller {
 
         let listaFotos = [archivo1, archivo2]
 
-        /*
-        let payload = "{\n" +
-        "    \"sector\": \"\(sector)\",\n" +
-        "    \"motivo\": \"\(motivo)\",\n" +
-        "    \"asunto\": \"\(asunto)\",\n" +
-        "    \"dni\": \"\(dni)\",\n" +
-        "    \"descripcionInconformidad\": \"\(descripcionInconformidad)\",\n" +
-        "    \"coordenada_x\": \"\(coordenada_x)\",\n" +
-        "    \"coordenada_y\": \"\(latitud)\",\n" +
-        "    \"codigoUnidadOperativa\": \"\(codigoUnidadOperativa)\",\n" +
-        "    \"telefono\": \"\(telefono)\",\n" +
-        "    \"correo\": \"\(correo)\",\n" +
-        "    \"nombre\": \"\(nombre)\",\n" +
-        "    \"apellidoPaterno\": \"\(apellidoPaterno)\",\n" +
-        "    \"apellidoMaterno\": \"\(apellidoMaterno)\",\n" +
-        "    \"direccion\": \"\(direccion)\",\n" +
-
-        "    \"lista\": \"\(longitud)\"\n" +
-            "}"*/
-        
         let payload = """
         {
             "sector": "\(sector)",
@@ -761,6 +808,85 @@ class APICaller {
         urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         urlRequest.httpBody = payload.data(using: String.Encoding.utf8)
+        
+        SecurityCertificateManager.sharedInstance.defaultManager.request(urlRequest)
+            .responseString { (response) in
+                if (response.error == nil) {
+                    let stringResponse: String = (String(data: response.data!, encoding: String.Encoding.utf8) as String?)!
+                    if (!stringResponse.isEmpty) {
+                        completion(true, stringResponse, response.response?.statusCode)
+                    } else {
+                        completion(false, "", -1)
+                    }
+                } else {
+                    completion(false, "", 0)
+                }
+        }
+    }
+    func PostListarDistritos( _ codDpto: String,_ codProv: String, completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
+        let url = "\(BASE_URL_MICROSERVICIO_UBIGEO)/ubigeo/listarDistrito"
+
+        let payload = "{\n" +
+            "    \"codDpto\": \"\(codDpto)\",\n" +
+            "    \"codProv\": \"\(codProv)\"\n" +
+            "}"
+        
+        debugPrint(payload)
+        
+        var urlRequest = URLRequest(url: URL(string: url)!)
+        urlRequest.httpMethod = HTTPMethod.post.rawValue
+        
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        urlRequest.httpBody = payload.data(using: String.Encoding.utf8)
+        
+        SecurityCertificateManager.sharedInstance.defaultManager.request(urlRequest)
+            .responseString { (response) in
+                if (response.error == nil) {
+                    let stringResponse: String = (String(data: response.data!, encoding: String.Encoding.utf8) as String?)!
+                    if (!stringResponse.isEmpty) {
+                        completion(true, stringResponse, response.response?.statusCode)
+                    } else {
+                        completion(false, "", -1)
+                    }
+                } else {
+                    completion(false, "", 0)
+                }
+        }
+    }
+    
+    func PostListarEmpresasElec(completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
+                
+        let url = "\(BASE_URL_MICROSERVICIO_DENUNCIAS)/concesionaria/listar"
+        
+        var urlRequest = URLRequest(url: URL(string: url)!)
+        urlRequest.httpMethod = HTTPMethod.post.rawValue
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        SecurityCertificateManager.sharedInstance.defaultManager.request(urlRequest)
+            .responseString { (response) in
+                if (response.error == nil) {
+                    let stringResponse: String = (String(data: response.data!, encoding: String.Encoding.utf8) as String?)!
+                    if (!stringResponse.isEmpty) {
+                        completion(true, stringResponse, response.response?.statusCode)
+                    } else {
+                        completion(false, "", -1)
+                    }
+                } else {
+                    completion(false, "", 0)
+                }
+        }
+    }
+    
+    func GetPostes(latitud: String, longitud: String, radio: String, idEmpresa: String, ubigeo: String, completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
+        
+        //let ubig = "-"
+        
+        let url = "\(BASE_URL_MICROSERVICIO_DENUNCIAS_INCORFORMIDAD)/sargop/listarPostes/\(latitud)/\(longitud)/\(radio)/\(idEmpresa)/\(ubigeo)"
+
+        var urlRequest = URLRequest(url: URL(string: url)!)
+        urlRequest.httpMethod = HTTPMethod.get.rawValue
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         SecurityCertificateManager.sharedInstance.defaultManager.request(urlRequest)
             .responseString { (response) in

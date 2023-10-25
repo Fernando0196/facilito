@@ -15,6 +15,7 @@ class CuidadosElectricidadViewController: UIViewController, UITextFieldDelegate 
 
     @IBOutlet weak var btnMenuUsuario: UIButton!
     
+    @IBOutlet weak var svAlerta: UIScrollView!
     @IBOutlet weak var vLlamar: UIView!
     @IBOutlet weak var vDenunciasReporte: UIView!
     @IBOutlet weak var vCuidados: UIView!

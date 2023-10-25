@@ -11,6 +11,8 @@ import GoogleMaps
 import MapKit
 import CoreLocation
 import Cosmos
+import DropDown
+
 
 class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocationManagerDelegate, GMSMapViewDelegate {
         
@@ -18,6 +20,7 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
     var jsonUsuario: IniciarSesionViewController? = nil
 
         var locationManager = CLLocationManager()
+    var userLocationMarker: GMSMarker?
 
         @IBOutlet weak var btnMenuUsuario: UIButton!
         @IBOutlet weak var btnBack: UIButton!
@@ -58,7 +61,7 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
     
     @IBOutlet weak var btnVerDetalle: UIButton!
     
-    @IBOutlet weak var tvNombre: UITextView!
+    @IBOutlet weak var lblNombre: UILabel!
     @IBOutlet weak var cosmosContainerView: CosmosView!
     
     @IBOutlet weak var lblCombustible: UILabel!
@@ -74,6 +77,8 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
     var latitud: String = ""
     var longitud: String = ""
     var ubigeo: String = ""
+    var filtroDistrito: String = ""
+   
     var displayMessage: String = ""
     var displayTitle: String = "Facilito"
     
@@ -111,6 +116,20 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
     var telefonoUsua: String = ""
     var telefonoBalon: String = ""
     
+    var balonPesoFiltro: String = ""
+    var establecimientosKmFiltro: String = ""
+    var ratingFiltro: String = ""
+    var distritoFiltro: String = ""
+    var codProvincia: String = ""
+    var codDepartamento: String = ""
+    
+    var dropDown = DropDown()
+    var distritos: [String] = []
+    var nombreDistrito: String = ""
+    var codigoDistrito: String = ""
+
+    @IBOutlet weak var tfDistrito: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -124,9 +143,6 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
             telefonoUsua = iniciarSesion.jsonUsuario["loginOutRO"]["telefono"].stringValue
             self.jsonUsuario = iniciarSesion
         }
-
-
-
  
         hViewFiltroExpan.constant = 0
         vFiltroExpan.isHidden = true
@@ -158,12 +174,32 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
         btnCali5.roundButton()
         btnLista.roundButton()
         btnMiUbicacion.roundButton()
+        lblGalon.roundLabel()
+        btnDistrito.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        filtroDistrito = "1"
+        
+        btn3KG.addShadowOnBottom()
+        btn5KG.addShadowOnBottom()
+        btn10KG.addShadowOnBottom()
+        btn15KG.addShadowOnBottom()
+        btn45KG.addShadowOnBottom()
+        btn10proximas.addShadowOnBottom()
+        btn30proximas.addShadowOnBottom()
+        btnGasolinera2km.addShadowOnBottom()
+        btnGasolinera3km.addShadowOnBottom()
+        btnCali1.addShadowOnBottom()
+        btnCali2.addShadowOnBottom()
+        btnCali3.addShadowOnBottom()
+        btnCali4.addShadowOnBottom()
+        btnCali5.addShadowOnBottom()
         
 
-
-
         vDetalleGrifo.roundView()
-        ivBalonGas.cornerRadius = 20
+        vDetalleGrifo.addCardShadow()
+
+        //ivBalonGas.cornerRadius = 23
+        ivBalonGas.layer.cornerRadius = ivBalonGas.frame.size.width / 2
+        ivBalonGas.clipsToBounds = true
         btnCall.roundButton()
         
         //traer al frente view
@@ -179,6 +215,11 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
         btnVerDetalle.isHidden = true
         btnCall.isHidden = true
         hBtnDetalleBalonGas.constant = 0
+
+        btnCall.addCardShadow()
+        self.establecimientosKmFiltro = "20C"
+        self.ratingFiltro = "5"
+        mapView.addShadowToTop()
 
     }
     
@@ -201,35 +242,73 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
     @IBAction func centrarUbicacion(_ sender: UIButton) {
 
         if let location = locationManager.location {
-            let camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: 14)
+            let camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: 10)
             print("Longitud: \(location.coordinate.longitude)")
               print("Latitud: \(location.coordinate.latitude)")
             mapView.animate(with: GMSCameraUpdate.setCamera(camera))
         }
     }
     
-    // Función que se llama cuando se actualiza la ubicación
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-                
         guard let location = locations.last else { return }
+
         // Imprime la longitud y latitud
         print("Longitud: \(location.coordinate.longitude)")
         print("Latitud: \(location.coordinate.latitude)")
         longitud = String(location.coordinate.longitude)
         latitud = String(location.coordinate.latitude)
-        obtenerCoordenadas()
+        //obtenerCoordenadas()
 
-        let camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: 14)
-        mapView.animate(with: GMSCameraUpdate.setCamera(camera))
-        
-        let marker = GMSMarker(position: location.coordinate)
+        // Si el marcador de ubicación del usuario aún no se ha creado, créalo.
+        if userLocationMarker == nil {
+            let camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: 14)
+            mapView.animate(with: GMSCameraUpdate.setCamera(camera))
 
-        marker.title = "Mi ubicación"
-        marker.snippet = "Aquí estoy"
-        marker.icon = UIImage(named: "marker")
-        marker.map = mapView
+            let marker = GMSMarker(position: location.coordinate)
+            marker.title = "Mi ubicación"
+            marker.snippet = "Aquí estoy"
+            marker.icon = UIImage(named: "marker")
+            marker.map = mapView
 
+            // Asigna el marcador del usuario a la variable userLocationMarker
+            userLocationMarker = marker
+        }
     }
+    var isFirstMapLoad = true
+
+    func mapView(_ mapView: GMSMapView, idleAt cameraPosition: GMSCameraPosition) {
+        if isFirstMapLoad {
+            guard let userLocation = locationManager.location else {
+                return
+            }
+            
+            let userLatitude = userLocation.coordinate.latitude
+            let userLongitude = userLocation.coordinate.longitude
+            
+            let camera = GMSCameraPosition.camera(withLatitude: userLatitude, longitude: userLongitude, zoom: 14)
+            mapView.camera = camera
+            
+            self.latitud = String(format: "%.6f", userLatitude)
+            self.longitud = String(format: "%.6f", userLongitude)
+            obtenerCoordenadas()
+            isFirstMapLoad = false
+            
+        } else {
+            if filtroDistrito == "1" {
+                let centerLatitude = cameraPosition.target.latitude
+                let centerLongitude = cameraPosition.target.longitude
+                print("Latitud del centro del mapa: \(centerLatitude)")
+                print("Longitud del centro del mapa: \(centerLongitude)")
+                
+                self.latitud = String(format: "%.6f", centerLatitude)
+                self.longitud = String(format: "%.6f", centerLongitude)
+                self.ubigeo = "-"
+                self.listarBalonGas()
+            }
+            
+        }
+    }
+    
     
     private func obtenerCoordenadas() {
         
@@ -245,6 +324,15 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
                          if !json["ubigeo"].stringValue.isEmpty {
                              
                              self.ubigeo = json["ubigeo"].stringValue
+                             self.codDepartamento = String(self.ubigeo.prefix(2))
+                             self.codProvincia = String(self.ubigeo.suffix(4).prefix(2)) 
+                             
+                             
+                             print("codDepartamento: " + self.codDepartamento)
+                             print("codProvincia: " + self.codProvincia)
+                             
+                             //self.listarDistritos() REVISAR URL 
+                             self.ubigeo = "-"
                              self.listarBalonGas()
                              
                          }
@@ -253,32 +341,104 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
                             self.performSegue(withIdentifier: "sgDM", sender: self)
                         }
                     } catch {
-                        self.displayMessage = "No se pudo obetener grifos, vuelve a intentar"
+                        self.displayMessage = "No se pudo obetener, vuelve a intentar"
                         self.performSegue(withIdentifier: "sgDM", sender: self)
                     }
                 } else {
-                    self.displayMessage = "No se pudo obetener grifos, vuelve a intentar"
+                    self.displayMessage = "No se pudo obetener, vuelve a intentar"
                     self.performSegue(withIdentifier: "sgDM", sender: self)
                 }
             } else {
                 debugPrint("error")
-                self.displayMessage = "No se pudo obetener grifos, vuelve a intentar"
+                self.displayMessage = "No se pudo obetener, vuelve a intentar"
                 self.performSegue(withIdentifier: "sgDM", sender: self)
             }
 
         })
     }
     
+    var codigoDistritoMap = [String: String]()
+    private func listarDistritos() {
+        let codDpto = self.codDepartamento
+        let codProv = self.codProvincia
+
+        let ac = APICaller()
+        self.showActivityIndicatorWithText(msg: "Cargando...", true, 200)
+        ac.PostListarDistritos(codDpto, codProv) { (success, result, code) in
+            self.hideActivityIndicatorWithText()
+            debugPrint(result!)
+            if (success && code == 200) {
+                if let dataFromString = result!.data(using: .utf8, allowLossyConversion: false) {
+                    do {
+                        let json = try JSON(data: dataFromString)
+
+                        // Limpia la lista de distritos antes de agregar nuevos valores
+                        self.distritos.removeAll()
+                        self.distritos.append("TODOS")
+                        self.codigoDistritoMap["TODOS"] = "-"
+                        if !json["distritos"].arrayValue.isEmpty {
+                            let jRecords = json["distritos"].arrayValue
+                            for subJson in jRecords {
+                                let codigo = subJson["codDist"].stringValue
+                                let nombreDistrito = subJson["distrito"].stringValue.trimmingCharacters(in: .whitespaces)
+
+                                if !self.distritos.contains(nombreDistrito) {
+                                    self.distritos.append(nombreDistrito)
+                                }
+                                self.codigoDistritoMap[nombreDistrito] = codigo
+                            }
+                            self.dropDown.anchorView = self.btnDistrito
+                            self.dropDown.dataSource = self.distritos
+                            self.dropDown.bottomOffset = CGPoint(x: 0, y: (self.dropDown.anchorView?.plainView.bounds.height)!)
+                            self.dropDown.topOffset = CGPoint(x: 0, y: -(self.dropDown.anchorView?.plainView.bounds.height)!)
+                            self.dropDown.direction = .bottom
+                            self.dropDown.selectionAction = { [unowned self] (index: Int, item: String) in
+                                //self.btnDistrito.setTitle(self.distritos[index] + " ", for: .normal)
+                                self.tfDistrito.text = self.distritos[index]
+                                let selectedNombreDistrito = self.distritos[index]
+                                
+                                if let selectedCodigoDistrito = codigoDistritoMap[selectedNombreDistrito] {
+                                    self.codigoDistrito = selectedCodigoDistrito
+                                    self.nombreDistrito = selectedNombreDistrito
+                                    print("Código del distrito seleccionado: \(self.codigoDistrito)")
+                                    filtrarPorDistrito()
+                                }
+                            }
+                        } else {
+                            self.displayMessage = json["Mensaje"].stringValue
+                            self.performSegue(withIdentifier: "sgDM", sender: self)
+                        }
+                    } catch {
+                        self.displayMessage = "No se pudo obtener, vuelve a intentar"
+                        self.performSegue(withIdentifier: "sgDM", sender: self)
+                    }
+                } else {
+                    self.displayMessage = "No se pudo obtener, vuelve a intentar"
+                    self.performSegue(withIdentifier: "sgDM", sender: self)
+                }
+            } else {
+                debugPrint("error")
+                self.displayMessage = "No se pudo obtener, vuelve a intentar"
+                self.performSegue(withIdentifier: "sgDM", sender: self)
+            }
+        }
+    }
+
+    @IBAction func mostrarDistritos(_ sender: Any) {
+        dropDown.show()
+    }
+    
     
     private func listarBalonGas() {
         
-        var metodo = 1
+        
+        let metodo = 1
         if metodo == 1 {
              categoria = "010"
 
-             distancia = "30C"
+            distancia = self.establecimientosKmFiltro
             if distancia == "-" {
-                distancia = "30C"
+                distancia = "20C"
             }
 
              idFamiliaGrifo = "-1"
@@ -287,11 +447,10 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
              tipoPago = "-"
              variable = "-"
 
-             calificacionFiltro = "5"
+            calificacionFiltro = self.ratingFiltro
             if calificacionFiltro == "-" {
                 calificacionFiltro = "5"
             }
-             calificacion = 0.0
 
             if let parsedCalificacion = Double(calificacionFiltro) {
                 calificacion = parsedCalificacion
@@ -314,7 +473,7 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
                     if let dataFromString = result!.data(using: .utf8, allowLossyConversion: false) {
                         do {
                            let json = try JSON(data: dataFromString)
-                           
+                            self.balonGas.removeAll()
                             if !json["coordenadas"]["coordenada"].arrayValue.isEmpty {
                                 let jRecords = json["coordenadas"]["coordenada"].arrayValue
                                 
@@ -338,12 +497,10 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
                                     let precioString = subJson["precio"].stringValue // Obtener el valor del precio como cadena
 
                                     if let precio = Double(precioString) {
-                                        // Si es posible convertir el precio a un número, formatear con dos decimales
-                                        let precioFormateado = String(format: "S/ %.2f", precio)
+                                        let precioFormateado = String(format: "%.2f", precio)
                                         f.precio = precioFormateado
                                     } else {
-                                        // Manejar el caso en que la conversión a número falla
-                                        print("No se pudo convertir el precio a un número válido.")
+                                         print("No se pudo convertir el precio a un número válido.")
                                     }
                                     f.latitudBalon = subJson["latitud"].stringValue
                                     f.longitudBalon = subJson["longitud"].stringValue
@@ -357,11 +514,11 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
                                         self.precioMayor = subJson["precio"].doubleValue
                                         print("Mayor: \(self.precioMayor)")
                                     }
-                                    
                                 }
-                                
-                                
-                                
+                                print("Total balon: \(self.balonGas.count)")
+                                self.mapView.clear()
+                                let userLocationMarker = self.userLocationMarker
+
                                 for (index, _) in self.balonGas.enumerated() {
                                     let f = self.balonGas[index]
                                     
@@ -417,7 +574,11 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
                                     marker.title = f.tituloMenu
                                     marker.iconView = customMarkerView
                                     marker.map = self.mapView
+                                }
 
+                                // Vuelve a agregar el marcador de ubicación del usuario actual
+                                if let userMarker = userLocationMarker {
+                                    userMarker.map = self.mapView
                                 }
 
 
@@ -425,25 +586,27 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
                                 
                             }
                              else {
-                               self.displayMessage = json["Mensaje"].stringValue
+                                 self.displayMessage = "No se pudo obtener, vuelve a intentar"
                                self.performSegue(withIdentifier: "sgDM", sender: self)
                            }
                        }  catch {
-                            self.displayMessage = "No se pudo obtener grifos, vuelve a intentar"
+                            self.displayMessage = "No se pudo obtener, vuelve a intentar"
                             self.performSegue(withIdentifier: "sgDM", sender: self)
                         }
                     } else {
-                        self.displayMessage = "No se pudo obtener grifos, vuelve a intentar"
+                        self.displayMessage = "No se pudo obtener, vuelve a intentar"
                         self.performSegue(withIdentifier: "sgDM", sender: self)
                     }
                 } else {
                     debugPrint("error")
-                    self.displayMessage = "No se pudo obtener grifos, vuelve a intentar"
+                    self.displayMessage = "No se pudo obtener, vuelve a intentar"
                     self.performSegue(withIdentifier: "sgDM", sender: self)
                 }
+
+
             }
     }
-    
+
     // Función para mostrar los detalles del balón al tocar el marcador
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
         guard let index = self.balonGas.firstIndex(where: { $0.tituloMenu == marker.title }) else {
@@ -452,21 +615,39 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
         
         let balon = self.balonGas[index]
         
-        hDetalleBalonGas.constant = 136
+        hDetalleBalonGas.constant = 95
         vDetalleGrifo.isHidden = false
         btnVerDetalle.isHidden = false
         btnCall.isHidden = false
-        hBtnDetalleBalonGas.constant = 136
+        hBtnDetalleBalonGas.constant = 95
         
-        tvNombre.text = balon.tituloMenu
+        lblNombre.text = balon.tituloMenu
         
         let doubleValue = Double(balon.valoracion)
         cosmosContainerView.rating = doubleValue ?? 0.0
         
         lblKm.text = balon.km + " km"
         lblCombustible.text = balon.nombreProducto + " a: "
-        lblGalon.text = " " + balon.precio + " Galón"
+        lblGalon.text = " S/ " + balon.precio + " "
 
+        let priceButton = UIButton()
+        priceButton.setTitle(balon.precio, for: .normal)
+        priceButton.titleLabel?.font = UIFont(name: "Poppins-Regular", size: 14)
+        priceButton.setTitleColor(.white, for: .normal)
+
+        if (Double(balon.precio) == self.precioMayor) {
+            lblGalon.backgroundColor = UIColor(hex: 0xFE3A46)
+        }
+        else if (Double(balon.precio) == self.precioMenor) {
+            lblGalon.backgroundColor = UIColor(hex: 0x029F1D)
+        }
+        else {
+            lblGalon.backgroundColor = UIColor(hex: 0xF8BD00)
+        }
+        
+        
+        
+        
         //para enviar al detalle
         self.codigoOsinergmin = balon.codigoOsinergmin
         self.nombreEstablecimiento = balon.tituloMenu
@@ -570,5 +751,147 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
             // Puedes mostrar un mensaje de error o tomar alguna otra acción apropiada.
         }
     }
+    
+    @IBAction func botonPresionadoBalon(_ sender: UIButton) {
+        // Desactivar todos los botones
+        btn3KG.backgroundColor =  UIColor(hex: 0xF5F6FB)
+        btn5KG.backgroundColor = UIColor(hex: 0xF5F6FB)
+        btn10KG.backgroundColor = UIColor(hex: 0xF5F6FB)
+        btn15KG.backgroundColor = UIColor(hex: 0xF5F6FB)
+        btn45KG.backgroundColor = UIColor(hex: 0xF5F6FB)
+        btn3KG.tintColor = UIColor(hex: 0x67738F)
+        btn5KG.tintColor = UIColor(hex: 0x67738F)
+        btn10KG.tintColor = UIColor(hex: 0x67738F)
+        btn15KG.tintColor = UIColor(hex: 0x67738F)
+        btn45KG.tintColor = UIColor(hex: 0x67738F)
+
+        // Activar el botón seleccionado
+        sender.backgroundColor = UIColor(hex: 0x000090)
+        sender.tintColor = UIColor.white
+        
+    }
+    
+    
+    @IBAction func botonPresionadEstablecimiento(_ sender: UIButton) {
+        for boton in [btn10proximas, btn30proximas, btnGasolinera2km, btnGasolinera3km] {
+            boton?.backgroundColor = UIColor(hex: 0xF5F6FB)
+            boton?.tintColor = UIColor(hex: 0x67738F)
+        }
+
+        if sender == btn10proximas {
+            btn10proximas.backgroundColor = UIColor(hex: 0x000090)
+            btn10proximas.tintColor = UIColor.white
+            establecimientosKmFiltro = "20C"
+        } else if sender == btn30proximas {
+            btn30proximas.backgroundColor = UIColor(hex: 0x000090)
+            btn30proximas.tintColor = UIColor.white
+            establecimientosKmFiltro = "30C"
+        } else if sender == btnGasolinera2km {
+            btnGasolinera2km.backgroundColor = UIColor(hex: 0x000090)
+            btnGasolinera2km.tintColor = UIColor.white
+            establecimientosKmFiltro = "02K"
+        } else if sender == btnGasolinera3km {
+            btnGasolinera3km.backgroundColor = UIColor(hex: 0x000090)
+            btnGasolinera3km.tintColor = UIColor.white
+            establecimientosKmFiltro = "03K"
+        }
+        print("Valor de establecimientosKmFiltro:", establecimientosKmFiltro)
+        listarBalonGas()
+
+    }
+   
+    
+    @IBAction func botonPresionadCalificacion(_ sender: UIButton) {
+        let buttons = [btnCali1, btnCali2, btnCali3, btnCali4, btnCali5]
+        for button in buttons {
+            if let unwrappedButton = button {
+                unwrappedButton.backgroundColor = UIColor(hex: 0xF5F6FB)
+                unwrappedButton.tintColor = UIColor(hex: 0x67738F)
+            }
+        }
+
+        sender.backgroundColor = UIColor(hex: 0x000090)
+        sender.tintColor = UIColor.white
+
+        if sender == btnCali1 {
+            ratingFiltro = "1"
+        } else if sender == btnCali2 {
+            ratingFiltro = "2"
+        } else if sender == btnCali3 {
+            ratingFiltro = "3"
+        } else if sender == btnCali4 {
+            ratingFiltro = "4"
+        } else if sender == btnCali5 {
+            ratingFiltro = "5"
+        }
+        print("Valor de ratingFiltro:", ratingFiltro)
+        listarBalonGas()
+    }
+    
+    
+    @IBAction func borrarFiltros(_ sender: Any) {
+        ratingFiltro = "-"
+        establecimientosKmFiltro = "-"
+        categoria = "010"
+        filtroDistrito = "1"
+        distancia = "20C"
+        codigoDistrito = "-"
+        tfDistrito.text = "Distritos"
+        btn3KG.backgroundColor =  UIColor(hex: 0xF5F6FB)
+        btn5KG.backgroundColor = UIColor(hex: 0xF5F6FB)
+        btn10KG.backgroundColor = UIColor(hex: 0xF5F6FB)
+        btn15KG.backgroundColor = UIColor(hex: 0xF5F6FB)
+        btn45KG.backgroundColor = UIColor(hex: 0xF5F6FB)
+        btn3KG.tintColor = UIColor(hex: 0x67738F)
+        btn5KG.tintColor = UIColor(hex: 0x67738F)
+        btn10KG.tintColor = UIColor(hex: 0x000090)
+        btn15KG.tintColor = UIColor(hex: 0x67738F)
+        btn45KG.tintColor = UIColor(hex: 0x67738F)
+        
+        for boton in [btn10proximas, btn30proximas, btnGasolinera2km, btnGasolinera3km] {
+            boton?.backgroundColor = UIColor(hex: 0xF5F6FB)
+            boton?.tintColor = UIColor(hex: 0x67738F)
+        }
+        let buttons = [btnCali1, btnCali2, btnCali3, btnCali4, btnCali5]
+        for button in buttons {
+            if let unwrappedButton = button {
+                unwrappedButton.backgroundColor = UIColor(hex: 0xF5F6FB)
+                unwrappedButton.tintColor = UIColor(hex: 0x67738F)
+            }
+        }
+        if let location = locationManager.location {
+            let camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: 14)
+            print("Longitud: \(location.coordinate.longitude)")
+              print("Latitud: \(location.coordinate.latitude)")
+            mapView.animate(with: GMSCameraUpdate.setCamera(camera))
+        }
+        
+        
+        listarBalonGas()
+    }
+    
+
+    private func filtrarPorDistrito() {
+        
+        
+        _ = self.codDepartamento
+        _ = self.codProvincia
+        let codigoDist = self.codigoDistrito
+        
+        if codigoDistrito == "-"{
+            filtroDistrito = "1"
+            self.ubigeo = "-"
+            listarBalonGas()
+
+        }
+        else{
+            self.ubigeo = self.codDepartamento + self.codProvincia + codigoDist
+            filtroDistrito = "2"
+            listarBalonGas()
+        }
+
+        
+    }
+
     
 }

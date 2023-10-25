@@ -24,7 +24,14 @@ extension UIButton{
         layer.cornerRadius = bounds.height / 20
         clipsToBounds = true
     }
-
+    
+    func addCardShadowToButton(button: UIButton) {
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 4)
+        button.layer.shadowOpacity = 0.8
+        button.layer.shadowRadius = 6
+        button.layer.masksToBounds = false
+    }
 
 }
 extension UIImageView{
@@ -138,6 +145,24 @@ extension UIStackView {
 
 extension UIView {
 
+    func addShadowToTop() {
+
+        let innerShadowLayer = CALayer()
+        innerShadowLayer.frame = bounds
+
+        innerShadowLayer.shadowColor = UIColor.black.cgColor
+        innerShadowLayer.shadowOffset = CGSize(width: 0, height: -5) // Ajusta la distancia vertical de la sombra hacia arriba
+        innerShadowLayer.shadowRadius = 5 // Ajusta el radio de la sombra
+        innerShadowLayer.shadowOpacity = 0.7 // Ajusta la opacidad de la sombra
+        innerShadowLayer.masksToBounds = false
+
+        // Configura la máscara para la sombra
+        let shadowPath = UIBezierPath(rect: CGRect(x: 0, y: -5, width: bounds.size.width, height: 5))
+        innerShadowLayer.shadowPath = shadowPath.cgPath
+
+        // Agrega la capa de sombra a la vista
+        layer.addSublayer(innerShadowLayer)
+    }
     
     func bordeSuperior(radius: CGFloat) {
         let maskPath = UIBezierPath(
@@ -176,10 +201,18 @@ extension UIView {
     func addShadowOnBottom() {
           self.layer.shadowColor = UIColor.gray.cgColor
           self.layer.shadowOffset = CGSize(width: 0, height: 1) // Ajusta la altura de la sombra según tus preferencias
-          self.layer.shadowOpacity = 0.5
+          self.layer.shadowOpacity = 0.2
           self.layer.shadowRadius = 1
           self.layer.masksToBounds = false // Importante para mostrar la sombra
-      }
+    }
+    
+    func addCardShadow() {
+        self.layer.shadowColor = UIColor.black.cgColor // Cambiamos el color de la sombra a negro
+        self.layer.shadowOffset = CGSize(width: 0, height: 4) // Ajustamos la altura de la sombra
+        self.layer.shadowOpacity = 0.4 // Aumentamos la opacidad de la sombra
+        self.layer.shadowRadius = 4 // Aumentamos el radio de la sombra
+        self.layer.masksToBounds = false
+    }
     
     @discardableResult
     public func addBlur(style: UIBlurEffect.Style = .extraLight) -> UIVisualEffectView {
@@ -406,7 +439,7 @@ extension UIViewController {
             //activityIndicator = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.white)
             activityIndicator = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.medium)
             activityIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
-            activityIndicator.color = UIColor(red: 192/255.0, green: 22/255.0, blue: 35/255.0, alpha: 1.0)
+            activityIndicator.color = UIColor.blue
             messageFrame.tag = 50
             activityIndicator.tag = 51
             

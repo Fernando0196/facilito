@@ -11,8 +11,9 @@ import DropDown
 import CoreLocation
 import GoogleMaps
 
-class DanoArtefactoViewController: UIViewController, UITextFieldDelegate, CLLocationManagerDelegate {
+class DanoArtefactoViewController: UIViewController, UITextFieldDelegate, CLLocationManagerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
+    var vObtenerDireccion: ObtenerDireccionViewController!
     let locationManager = CLLocationManager()
     let geocoder = CLGeocoder()
     
@@ -69,13 +70,28 @@ class DanoArtefactoViewController: UIViewController, UITextFieldDelegate, CLLoca
     
     var nombreReporte: String = ""
     let dropDown = DropDown()
-    let tiposReporte = ["Reportar recibo excesivo","Interrupción de servicio eléctrico","Reportar alumbrado público","Daño de artefactos eléctricos","Peligro por postes o cables"]
+    let tiposReporte = ["Reportar recibo excesivo","Interrupción de servicio eléctrico","Reportar alumbrado público","Peligro por cables o postes caídos"]
     var isDropDownVisible = false
     
+    let imagePicker = UIImagePickerController()
+
+    @IBOutlet weak var ivArchivo1: UIImageView!
+    @IBOutlet weak var ivArchivo2: UIImageView!
+    @IBOutlet weak var vImagen1: UIView!
+    @IBOutlet weak var vImagen2: UIView!
     
+    @IBOutlet weak var btnCancel1: UIButton!
+    @IBOutlet weak var btnCancel2: UIButton!
+    var foto1: String = ""
+    var foto2: String = ""
+    var buscarUbi: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        btnCancel1.isHidden = true
+        btnCancel2.isHidden = true
+        vImagen2.isHidden = true
         
         btnBack.roundButton()
         btnMenuUsuario.roundButton()
@@ -120,6 +136,21 @@ class DanoArtefactoViewController: UIViewController, UITextFieldDelegate, CLLoca
             let attributes: [NSAttributedString.Key: Any] = [.font: buttonFont]
             let attributedString = NSAttributedString(string: self.nombreReporte, attributes: attributes)
             btnReportar.setAttributedTitle(attributedString, for: .normal)
+            
+            if (self.nombreReporte == "Reportar recibo excesivo"){
+                self.performSegue(withIdentifier: "sgReciboE", sender: self)
+            }
+            if (self.nombreReporte == "Interrupción de servicio eléctrico"){
+                self.performSegue(withIdentifier: "sgInterrupcionE", sender: self)
+            }
+            if (self.nombreReporte == "Reportar alumbrado público"){
+                self.performSegue(withIdentifier: "sgReportarAlumbradoE", sender: self)
+            }
+            if (self.nombreReporte == "Peligro por cables o postes caídos"){
+                self.performSegue(withIdentifier: "sgPostesE", sender: self)
+            }
+            
+            
         }
         
         btnEnviar.roundButton()
@@ -137,10 +168,15 @@ class DanoArtefactoViewController: UIViewController, UITextFieldDelegate, CLLoca
         hcDireccion.constant = 0
         self.svSiNo.alpha = 0
         
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
+        if let direccionText = self.vObtenerDireccion?.direccion {
+            tfDireccion?.text = direccionText
+        } else {
+            
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.requestWhenInUseAuthorization()
+            locationManager.startUpdatingLocation()
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -204,18 +240,144 @@ class DanoArtefactoViewController: UIViewController, UITextFieldDelegate, CLLoca
     }
     
     
+    @IBAction func cargarImagenButtonTapped(_ sender: UIButton) {
+        let alertController = UIAlertController(title: "Seleccionar Imágenes", message: nil, preferredStyle: .actionSheet)
+        
+        let galeriaAction = UIAlertAction(title: "Galería", style: .default) { (_) in
+            self.abrirGaleria()
+        }
+        
+        let camaraAction = UIAlertAction(title: "Cámara", style: .default) { (_) in
+            self.abrirCamara()
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancelar", style: .cancel, handler: nil)
+        
+        alertController.addAction(galeriaAction)
+        alertController.addAction(camaraAction)
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    func abrirGaleria() {
+        imagePicker.delegate = self
+        imagePicker.sourceType = .photoLibrary
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    func abrirCamara() {
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            imagePicker.delegate = self
+            imagePicker.sourceType = .camera
+            present(imagePicker, animated: true, completion: nil)
+        } else {
+            
+        }
+    }
+    
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let selectedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage,
+              let imageData = selectedImage.jpegData(compressionQuality: 0.5) else {
+            dismiss(animated: true, completion: nil)
+            return
+        }
+        
+        let base64String = imageData.base64EncodedString()
+        
+        if ivArchivo1.image == nil {
+            ivArchivo1.image = selectedImage
+            ivArchivo1.contentMode = .scaleAspectFill
+            ivArchivo1.clipsToBounds = true
+            foto1 = base64String
+            
+            // Configurar vImagen1 para mostrar la imagen
+            vImagen1.isHidden = false
+            vImagen2.isHidden = false
+            ivArchivo1.isHidden = false
+            btnCancel1.isHidden = false
+            ivArchivo1.isUserInteractionEnabled = true
+            
+        } else {
+            ivArchivo2.image = UIImage(data: imageData)
+            ivArchivo2.contentMode = .scaleAspectFill
+            ivArchivo2.clipsToBounds = true
+            foto2 = base64String
+            
+            // Configurar vImagen2 para mostrar la imagen
+            vImagen2.isHidden = false
+            vImagen1.isHidden = false
+            ivArchivo2.isHidden = false
+            btnCancel2.isHidden = false
+            ivArchivo2.isUserInteractionEnabled = true
+        }
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func ocultarImagen1(_ sender: Any) {
+        ivArchivo1.image = nil
+        ivArchivo1.isHidden = true
+        btnCancel1.isHidden = true
+        foto1 = ""
+        ivArchivo1.isUserInteractionEnabled = false
+        
+        if ivArchivo1.image == nil && ivArchivo2.image == nil {
+            vImagen1.isHidden = false
+            vImagen2.isHidden = true
+
+        }
+    }
+    
+    @IBAction func ocultarImagen2(_ sender: Any) {
+        ivArchivo2.image = nil
+        ivArchivo2.isHidden = true
+        btnCancel2.isHidden = true
+        foto2 = ""
+        ivArchivo2.isUserInteractionEnabled = false
+
+        if ivArchivo1.image == nil && ivArchivo2.image == nil {
+            vImagen1.isHidden = false
+            vImagen2.isHidden = true
+        }
+    }
+    @IBAction func abrirMapa(_ sender: Any) {
+        self.buscarUbi = 1
+        self.performSegue(withIdentifier: "sgMapa", sender: self)
+
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         /*if (segue.identifier == "sgDM") {
          let vc = segue.destination as! NotificationViewController
          vc.message = self.displayMessage
          vc.header = self.displayTitle
          }*/
-        if (segue.identifier == "sgEnviar") {
-            let vc = segue.destination as! DanoArtefactoEnviadoViewController
-            // vc.vParent = self
+        if (segue.identifier == "sgInterrupcionE") {
+            let vc = segue.destination as! InterrupcionServicioViewController
+           // vc.vParent = self
         }
-        
-        
+        if (segue.identifier == "sgReciboE") {
+            let vc = segue.destination as! ElectricidadViewController
+            //vc.vBalonGasMapa = self
+            //
+        }
+        if (segue.identifier == "sgPostesE") {
+            let vc = segue.destination as! PeligrosPostesViewController
+            //vc.vBalonGasMapa = self
+            //
+        }
+        if (segue.identifier == "sgReportarAlumbradoE") {
+            let vc = segue.destination as! SeleccionePosteViewController
+            //vc.vBalonGasMapa = self
+            //
+            
+        }
+        if (segue.identifier == "sgMapa") {
+            let vc = segue.destination as! ObtenerDireccionViewController
+            vc.vDanio = self
+        }
     }
     
     
