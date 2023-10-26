@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "stardisable.png",
+      "filename" : "star2.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "star2 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "star2 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

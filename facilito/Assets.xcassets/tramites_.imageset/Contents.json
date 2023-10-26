@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "tramites_.png",
+      "filename" : "Tramites_new.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Tramites_new 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "Tramites_new 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -77,6 +77,7 @@
 		57A24EF6299FD8B20083C3D9 /* ReciboExcesivoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A24EF5299FD8B20083C3D9 /* ReciboExcesivoViewController.swift */; };
 		57A24EF8299FDCBD0083C3D9 /* CalculadoraFacturacionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A24EF7299FDCBD0083C3D9 /* CalculadoraFacturacionViewController.swift */; };
 		57A24EFA299FFAE30083C3D9 /* CalculadoraFacturaResultadoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A24EF9299FFAE30083C3D9 /* CalculadoraFacturaResultadoViewController.swift */; };
+		57A4D7762AE9BA30007F7A1F /* GrifosMapaMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A4D7752AE9BA30007F7A1F /* GrifosMapaMenu.swift */; };
 		57AD2ACC2A0EC11800D549FF /* ReporteAlumbradoPublicoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57AD2ACB2A0EC11800D549FF /* ReporteAlumbradoPublicoViewController.swift */; };
 		57AEE06C2A0605D5005DD30E /* GrifoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57AEE06B2A0605D5005DD30E /* GrifoViewController.swift */; };
 		57B1B9E62AA2564F0079E10A /* Poppins-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 57B1B9D42AA2564C0079E10A /* Poppins-ExtraLight.ttf */; };
@@ -253,6 +254,7 @@
 		57A24EF5299FD8B20083C3D9 /* ReciboExcesivoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReciboExcesivoViewController.swift; sourceTree = "<group>"; };
 		57A24EF7299FDCBD0083C3D9 /* CalculadoraFacturacionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculadoraFacturacionViewController.swift; sourceTree = "<group>"; };
 		57A24EF9299FFAE30083C3D9 /* CalculadoraFacturaResultadoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculadoraFacturaResultadoViewController.swift; sourceTree = "<group>"; };
+		57A4D7752AE9BA30007F7A1F /* GrifosMapaMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrifosMapaMenu.swift; sourceTree = "<group>"; };
 		57AD2ACB2A0EC11800D549FF /* ReporteAlumbradoPublicoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReporteAlumbradoPublicoViewController.swift; sourceTree = "<group>"; };
 		57AEE06B2A0605D5005DD30E /* GrifoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrifoViewController.swift; sourceTree = "<group>"; };
 		57B1B9D42AA2564C0079E10A /* Poppins-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-ExtraLight.ttf"; sourceTree = "<group>"; };
@@ -620,6 +622,7 @@
 				574500762AD050C3007CB7EB /* EmpresasInstMenu.swift */,
 				577101D92AD0A2A500BBC403 /* EmpresasInstDetaMenu.swift */,
 				5768273E2AE70C93008BE2F4 /* PostesMenu.swift */,
+				57A4D7752AE9BA30007F7A1F /* GrifosMapaMenu.swift */,
 			);
 			path = Dao;
 			sourceTree = "<group>";
@@ -983,6 +986,7 @@
 				57BA0AD028F6099000FD0F4E /* TabBar.swift in Sources */,
 				57FC1E232ABE3AD200681CF7 /* NoConformeViewController.swift in Sources */,
 				57C1698B2A9E6DA700AF9C0C /* telefonosCell.swift in Sources */,
+				57A4D7762AE9BA30007F7A1F /* GrifosMapaMenu.swift in Sources */,
 				574500792AD050D9007CB7EB /* empresasinstCell.swift in Sources */,
 				576D1AC92ABD2DF300E3C8C5 /* TramitesDetalleViewController.swift in Sources */,
 				57C169892A9E68F300AF9C0C /* marcaprecioCell.swift in Sources */,

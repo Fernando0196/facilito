@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "balon_gas_.png",
+      "filename" : "Balon_new.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Balon_new 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "Balon_new 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "gas_nat_.png",
+      "filename" : "Gas_nat_new.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Gas_nat_new 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "Gas_nat_new 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

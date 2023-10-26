@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "electricidad_.png",
+      "filename" : "Elect_new.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Elect_new 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "Elect_new 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

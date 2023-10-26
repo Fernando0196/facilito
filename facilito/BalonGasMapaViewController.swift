@@ -274,6 +274,7 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
             userLocationMarker = marker
         }
     }
+    
     var isFirstMapLoad = true
 
     func mapView(_ mapView: GMSMapView, idleAt cameraPosition: GMSCameraPosition) {
@@ -321,8 +322,8 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
                      do {
                         let json = try JSON(data: dataFromString)
                         
-                         if !json["ubigeo"].stringValue.isEmpty {
-                             
+                         if !json["empresaConcesionariaOutRO"]["ubigeo"].stringValue.isEmpty {
+
                              self.ubigeo = json["ubigeo"].stringValue
                              self.codDepartamento = String(self.ubigeo.prefix(2))
                              self.codProvincia = String(self.ubigeo.suffix(4).prefix(2)) 
