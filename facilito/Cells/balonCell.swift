@@ -66,27 +66,19 @@ class balonCell : UITableViewCell {
 
             fontSize = 18
         }
-        
-        // Establecer el fondo de color personalizado
         btnPrecio.backgroundColor = buttonBackgroundColor
         btnPrecio.borderColor = borderColor
 
-        // Crear un estilo de texto con un salto de línea después de "S/"
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
-        paragraphStyle.lineSpacing = 5.0 // Espacio entre las dos líneas de texto (ajústalo según tus preferencias)
-
-        // Definir la fuente y el tamaño del texto en negrita
+        paragraphStyle.lineSpacing = 5.0
         if let buttonFont = UIFont(name: "Poppins-Bold", size: fontSize) {
             let attributes: [NSAttributedString.Key: Any] = [.paragraphStyle: paragraphStyle, .font: buttonFont]
 
-            // Crear el texto combinado con "S/" y el valor del precio
             let combinedText = "S/\n\(String(format: "%.2f", precioGalon))"
 
-            // Crear el atributo de texto con el estilo y el texto combinado
             let attributedString = NSAttributedString(string: combinedText, attributes: attributes)
 
-            // Establecer el texto del botón con el atributo de texto personalizado
             btnPrecio.setAttributedTitle(attributedString, for: .normal)
         } else {
             print("Error: No se pudo cargar la fuente 'Poppins-Bold'")

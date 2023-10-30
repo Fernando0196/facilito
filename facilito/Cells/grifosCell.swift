@@ -12,64 +12,87 @@ import Cosmos
 
 class grifosCell : UITableViewCell {
     
-    @IBOutlet weak var img: UIImageView!
-    @IBOutlet weak var titulo: UITextView!
-    @IBOutlet weak var tituloH: NSLayoutConstraint!
-
-    @IBOutlet weak var km: UILabel!
-    @IBOutlet weak var octanos: UILabel!
-    @IBOutlet weak var galones: UILabel!
+    @IBOutlet weak var lblNombre: UILabel!
+    @IBOutlet weak var lblNombreProducto: UILabel!
     @IBOutlet weak var menuView: UIView!
-    
-    @IBOutlet weak var btnFavorito: UIButton!
+    @IBOutlet weak var km: UILabel!
     
     @IBOutlet weak var btnLocalizador: UIButton!
     @IBOutlet weak var btnSeleccionarMenu: UIButton!
     
     @IBOutlet weak var cosmosContainerView: CosmosView!
     
-    var precioGalon: Double = 0.0
+    @IBOutlet weak var btnPrecio: UIButton!
 
-    var precioMay: Double = 0.0
-    var precioMen: Double = 0.0
+    var precioGrifo: String = ""
+    var precioMay: String = ""
+    var precioMen: String = ""
 
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        
 
-        titulo.textContainer.lineFragmentPadding = 0
-        titulo.textContainerInset = .zero
-        titulo.layoutIfNeeded()
-        tituloH.constant = self.titulo.contentSize.height
-
-        
-        galones.numberOfLines = 0
-        galones.lineBreakMode = .byWordWrapping
         let cosmosView = CosmosView()
         cosmosView.settings.fillMode = .precise
         cosmosView.settings.filledColor = .yellow
         cosmosView.settings.emptyBorderColor = .yellow
         cosmosView.settings.updateOnTouch = true
         
-
-        btnFavorito.roundButton()
+        configurePrecioButton()
+        btnPrecio.roundButton()
         btnLocalizador.roundButton()
-        img.roundImagen()
+        btnPrecio.addShadowOnBottom()
 
-        if (precioGalon == precioMay) {
-            galones.backgroundColor = UIColor(hex: 0xFDE0E0)
-            galones.roundLabel()
+    }
+    
+    func configurePrecioButton() {
+        var buttonBackgroundColor: UIColor
+        var borderColor: UIColor
+
+        var fontSize: CGFloat
+
+        if self.precioGrifo == self.precioMay {
+            buttonBackgroundColor = UIColor(hex: 0xFE3A46)
+            borderColor = UIColor(hex: 0xFE3A46)
+            fontSize = 18
+        } else if precioGrifo == self.precioMen {
+            buttonBackgroundColor = UIColor(hex: 0x029F1D)
+            borderColor = UIColor(hex: 0x029F1D)
+            fontSize = 18
+        } else {
+            buttonBackgroundColor = UIColor(hex: 0xF8BD02)
+            borderColor = UIColor(hex: 0xF8BD02)
+            fontSize = 18
         }
-        else if (precioGalon == precioMen) {
-            galones.backgroundColor = UIColor(hex: 0xE0FDEA)
-            galones.roundLabel()
+        btnPrecio.backgroundColor = buttonBackgroundColor
+        btnPrecio.borderColor = borderColor
 
-        }
-        else{
-            galones.backgroundColor = UIColor(hex: 0xFFEDE0)
-            galones.roundLabel()
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        paragraphStyle.lineSpacing = 5.0
 
+        if let buttonFont = UIFont(name: "Poppins-Bold", size: fontSize) {
+            let attributes: [NSAttributedString.Key: Any] = [.paragraphStyle: paragraphStyle, .font: buttonFont]
+
+            if let precioDouble = Double(self.precioGrifo) {
+                let numberFormatter = NumberFormatter()
+                numberFormatter.numberStyle = .decimal
+                numberFormatter.minimumFractionDigits = 2
+                numberFormatter.maximumFractionDigits = 2
+
+                if let formattedPrice = numberFormatter.string(from: NSNumber(value: precioDouble)) {
+                    let combinedText = "S/ " + formattedPrice
+
+                    let attributedString = NSAttributedString(string: combinedText, attributes: attributes)
+                    btnPrecio.setAttributedTitle(attributedString, for: .normal)
+                }
+            }
+        
+        } else {
+            print("Error: No se pudo cargar la fuente 'Poppins-Bold'")
         }
     }
+    
+    
+    
 }

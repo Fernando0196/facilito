@@ -11,6 +11,8 @@ import GoogleMaps
 import MapKit
 import CoreLocation
 import DropDown
+import Cosmos
+import GooglePlaces
 
 
 class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMSMapViewDelegate {
@@ -47,12 +49,25 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
     @IBOutlet weak var btnCali3: UIButton!
     @IBOutlet weak var btnCali4: UIButton!
     @IBOutlet weak var btnCali5: UIButton!
+    @IBOutlet weak var btnCerrarFiltro: UIButton!
+    @IBOutlet weak var btnAbrirFiltroExpan: UIButton!
     
     @IBOutlet weak var btnDistrito: UIButton!
     
     @IBOutlet weak var hViewFiltroExpan: NSLayoutConstraint!
     @IBOutlet weak var vFiltroExpan: UIView!
     @IBOutlet weak var tfDistrito: UITextField!
+    
+    @IBOutlet weak var vDetalleGrifo: UIView!
+    @IBOutlet weak var btnIconGrifo: UIButton!
+    @IBOutlet weak var lblNombre: UILabel!
+    @IBOutlet weak var lblKm: UILabel!
+    @IBOutlet weak var lblCombustible: UILabel!
+    @IBOutlet weak var lblPrecio: UILabel!
+    @IBOutlet weak var btnRuta: UIButton!
+    @IBOutlet weak var cosmosContainerView: CosmosView!
+    
+    @IBOutlet weak var hDetalleGrifo: NSLayoutConstraint!
 
     var grifos: [GrifosMapaMenu] = [GrifosMapaMenu]()
 
@@ -64,6 +79,8 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
     var displayTitle: String = "Facilito"
     var latitud: String = ""
     var longitud: String = ""
+    var latitudUbiActual: String = ""
+    var longitudUbiActual: String = ""
     var ubigeo: String = ""
     var filtroDistrito: String = ""
     var codProvincia: String = ""
@@ -84,7 +101,12 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
     var precioMayor: String = ""
     var precioMenor: String = ""
     var precioGrifo: String = ""
-
+    var codigoOsinergmin: String = ""
+    var nombreEstablecimiento: String = ""
+    var valoracionEstablecimiento: String = ""
+    var direccionEstablecimiento: String = ""
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -94,7 +116,16 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
         locationManager.startUpdatingLocation()
         mapView.delegate = self
         filtroDistrito = "1"
+        
 
+        btnCerrarFiltro.isHidden = true
+        btnCerrarFiltro.roundButton()
+        lblPrecio.roundLabel()
+        vDetalleGrifo.roundView()
+        vDetalleGrifo.addCardShadow()
+        btnIconGrifo.roundButton()
+        btnRuta.roundButton()
+        btnRuta.addCardShadow()
         btnBack.roundButton()
         btnMenuUsuario.roundButton()
         btng84.roundButton()
@@ -114,10 +145,15 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
         btnCali5.roundButton()
         btnLista.roundButton()
         btnMiUbicacion.roundButton()
-        
+
         hViewFiltroExpan.constant = 0
         vFiltroExpan.isHidden = true
-
+        
+        hDetalleGrifo.constant = 0
+        vDetalleGrifo.isHidden = true
+        //btnVerDetalle.isHidden = true
+        btnRuta.isHidden = true
+        //hBtnDetalleBalonGas.constant = 0
     }
     
     @IBAction func motrarFiltroExpan(_ sender: Any) {
@@ -125,15 +161,20 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
         if vFiltroExpan.isHidden {
             hViewFiltroExpan.constant = 223.33
             vFiltroExpan.isHidden = false
+            btnCerrarFiltro.isHidden = false
+            btnAbrirFiltroExpan.isHidden = true
+
         } else {
+            btnAbrirFiltroExpan.isHidden = false
             vFiltroExpan.isHidden = true
+            btnCerrarFiltro.isHidden = true
             hViewFiltroExpan.constant = 0
         }
     }
     
     @IBAction func centrarUbicacion(_ sender: UIButton) {
         if let location = locationManager.location {
-            let camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: 10)
+            let camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: 14)
             mapView.animate(with: GMSCameraUpdate.setCamera(camera))
         }
     }
@@ -164,10 +205,12 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
         if userLocationMarker == nil {
             let camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: 14)
             mapView.animate(with: GMSCameraUpdate.setCamera(camera))
-
+            self.latitudUbiActual = latitud
+            self.longitudUbiActual = longitud
             let marker = GMSMarker(position: location.coordinate)
             marker.title = "Mi ubicación"
             marker.snippet = "Aquí estoy"
+            
             marker.icon = UIImage(named: "marker")
             marker.map = mapView
             userLocationMarker = marker
@@ -514,6 +557,298 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
         }
     
     }
+    
 
+    func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+        guard let index = self.grifos.firstIndex(where: { $0.tituloMenu == marker.title }) else {
+            return false
+        }
+        
+        var precioMayor = self.grifos[0].precioGrifo
+        var precioMenor = self.grifos[0].precioGrifo
+        var precioPromedio: Double = 0.0
+
+        var ubicacionPrecioMayor: CLLocationCoordinate2D?
+        var ubicacionPrecioMenor: CLLocationCoordinate2D?
+        var ubicacionPrecioPromedio: CLLocationCoordinate2D?
+
+        var nombrePrecioMayor = self.grifos[0].tituloMenu
+        var nombrePrecioMenor = self.grifos[0].tituloMenu
+        var nombrePrecioPromedio: String?
+
+        var minDiferencia = Double.greatestFiniteMagnitude
+
+        for grifo in self.grifos {
+            if let precioGrifo = Double(grifo.precioGrifo) {
+                if precioGrifo > Double(precioMayor)! {
+                    precioMayor = grifo.precioGrifo
+                    ubicacionPrecioMayor = CLLocationCoordinate2D(latitude: Double(grifo.latitudGrifo) ?? 0.0, longitude: Double(grifo.longitudGrifo) ?? 0.0)
+                    nombrePrecioMayor = grifo.tituloMenu
+                } else if precioGrifo < Double(precioMenor)! {
+                    precioMenor = grifo.precioGrifo
+                    ubicacionPrecioMenor = CLLocationCoordinate2D(latitude: Double(grifo.latitudGrifo) ?? 0.0, longitude: Double(grifo.longitudGrifo) ?? 0.0)
+                    nombrePrecioMenor = grifo.tituloMenu
+                }
+                precioPromedio += precioGrifo
+                let diferencia = abs(precioGrifo - precioPromedio / Double(self.grifos.count))
+                if diferencia < minDiferencia {
+                    minDiferencia = diferencia
+                    nombrePrecioPromedio = grifo.tituloMenu
+                    ubicacionPrecioPromedio = CLLocationCoordinate2D(latitude: Double(grifo.latitudGrifo) ?? 0.0, longitude: Double(grifo.longitudGrifo) ?? 0.0)
+                }
+            }
+        }
+
+        precioPromedio = precioPromedio / Double(self.grifos.count)
+
+        if let ubicacionPrecioMayor = ubicacionPrecioMayor {
+            print("Grifo con precio mayor:")
+            print("Nombre: \(nombrePrecioMayor)")
+            print("Precio: \(precioMayor)")
+            print("Ubicación: Latitud \(ubicacionPrecioMayor.latitude), Longitud \(ubicacionPrecioMayor.longitude)")
+        }
+
+        if let ubicacionPrecioMenor = ubicacionPrecioMenor {
+            print("Grifo con precio menor:")
+            print("Nombre: \(nombrePrecioMenor)")
+            print("Precio: \(precioMenor)")
+            print("Ubicación: Latitud \(ubicacionPrecioMenor.latitude), Longitud \(ubicacionPrecioMenor.longitude)")
+        }
+
+        if let nombrePrecioPromedio = nombrePrecioPromedio, let ubicacionPrecioPromedio = ubicacionPrecioPromedio {
+            print("Grifo más cercano al precio promedio:")
+            print("Nombre: \(nombrePrecioPromedio)")
+            print("Precio Promedio: \(precioPromedio)")
+            print("Ubicación: Latitud \(ubicacionPrecioPromedio.latitude), Longitud \(ubicacionPrecioPromedio.longitude)")
+        }
+
+        let grifoSeleccionado = self.grifos[index]
+        
+        let ubicacionGrifoSeleccionado = CLLocationCoordinate2D(
+            latitude: Double(grifoSeleccionado.latitudGrifo) ?? 0.0,
+            longitude: Double(grifoSeleccionado.longitudGrifo) ?? 0.0
+    
+        )
+        
+        let routeColorSeleccionado = UIColor.blue
+        drawRoute(to: ubicacionGrifoSeleccionado, color: routeColorSeleccionado)
+        if let ubicacionPrecioMayor = ubicacionPrecioMayor {
+              let routeColorMayor = UIColor.red
+              drawRoute(to: ubicacionPrecioMayor, color: routeColorMayor)
+        }
+          
+        if let ubicacionPrecioMenor = ubicacionPrecioMenor {
+              let routeColorMenor = UIColor(hex: 0x008000)
+              drawRoute(to: ubicacionPrecioMenor, color: routeColorMenor)
+        }
+
+        if let ubicacionPrecioPromedio = ubicacionPrecioPromedio {
+              let routeColorPromedio = UIColor(hex: 0xFFD700)
+              drawRoute(to: ubicacionPrecioPromedio, color: routeColorPromedio)
+        }
+
+
+        
+        let grifos = self.grifos[index]
+        
+        hDetalleGrifo.constant = 112
+        vDetalleGrifo.isHidden = false
+        //btnVerDetalle.isHidden = false
+        btnRuta.isHidden = false
+        //hBtnDetalleBalonGas.constant = 95
+        
+        lblNombre.text = grifos.tituloMenu
+        
+        let doubleValue = Double(grifos.valoracion)
+        cosmosContainerView.rating = doubleValue ?? 0.0
+        
+        lblKm.text = grifos.km + " km"
+        lblCombustible.text = grifos.nombreProducto + " a: "
+        lblPrecio.text = " " + grifos.precio + " "
+
+        let priceButton = UIButton()
+        priceButton.setTitle(grifos.precio, for: .normal)
+        priceButton.titleLabel?.font = UIFont(name: "Poppins-Regular", size: 14)
+        priceButton.setTitleColor(.white, for: .normal)
+
+        if ((grifos.precioGrifo) == self.precioMayor) {
+            lblPrecio.backgroundColor = UIColor(hex: 0xFE3A46)
+            lblPrecio.textColor = UIColor(hex: 0xFFFFFF)
+
+        }
+        else if ((grifos.precioGrifo) == self.precioMenor) {
+            lblPrecio.backgroundColor = UIColor(hex: 0x029F1D)
+            lblPrecio.textColor = UIColor(hex: 0xFFFFFF)
+
+        }
+        else {
+            lblPrecio.backgroundColor = UIColor(hex: 0xF8BD00)
+            lblPrecio.textColor = UIColor(hex: 0x000000)
+        }
+        
+        // Para enviar al detalle
+        self.codigoOsinergmin = grifos.codigoOsinergmin
+        self.nombreEstablecimiento = grifos.tituloMenu
+        self.valoracionEstablecimiento = grifos.valoracion
+        self.direccionEstablecimiento =  grifos.direccion
+
+        return true
+    }
+    
+    //API AIzaSyAW62lFMPaya0zxvjfDNkXSu16e5HTGoRo
+    func drawRoute(to destination: CLLocationCoordinate2D, color: UIColor) {
+        let baseURL = "https://maps.googleapis.com/maps/api/directions/json?"
+        let apiKey = "AIzaSyAW62lFMPaya0zxvjfDNkXSu16e5HTGoRo" // Reemplaza con tu propia clave de API
+
+        // Coordenadas de origen (tus coordenadas)
+        if let latitud = Double(self.latitudUbiActual), let longitud = Double(self.longitudUbiActual) {
+            let origin = CLLocationCoordinate2D(latitude: latitud, longitude: longitud)
+
+            // Crea la URL para la solicitud de direcciones
+            if let url = URL(string: "\(baseURL)origin=\(origin.latitude),\(origin.longitude)&destination=\(destination.latitude),\(destination.longitude)&key=\(apiKey)") {
+                let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+                    if let data = data, let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                        // Analiza la respuesta JSON para obtener información de la ruta
+                        if let routes = json["routes"] as? [[String: Any]], let route = routes.first, let overviewPolyline = route["overview_polyline"] as? [String: String], let points = overviewPolyline["points"] {
+                            // Decodifica las coordenadas de los pasos de la ruta
+                            let path = GMSPath(fromEncodedPath: points)
+                            
+                            DispatchQueue.main.async {
+                                // Crea una línea de poligono para la ruta y agrégala al mapa
+                                let polyline = GMSPolyline(path: path)
+                                polyline.strokeWidth = 5
+                                polyline.strokeColor = color
+                                polyline.map = self.mapView
+                            }
+                        }
+                    }
+                }
+                task.resume()
+            }
+        } else {
+            print("Error: No se pudieron convertir latitud y/o longitud en Double")
+        }
+    }
+    
+    @IBAction func mostrarLista(_ sender: Any) {
+        self.performSegue(withIdentifier: "sgLista", sender: self)
+
+    }
+    
+    @IBAction func botonPresionadoCombustible(_ sender: UIButton) {
+        // Desactivar todos los botones
+        btng84.backgroundColor =  UIColor(hex: 0xF5F6FB)
+        btnglp.backgroundColor = UIColor(hex: 0xF5F6FB)
+        btngnv.backgroundColor = UIColor(hex: 0xF5F6FB)
+        btndiesel.backgroundColor = UIColor(hex: 0xF5F6FB)
+        btngRegular.backgroundColor = UIColor(hex: 0xF5F6FB)
+        btngPremium.backgroundColor = UIColor(hex: 0xF5F6FB)
+        btng84.tintColor = UIColor(hex: 0x67738F)
+        btnglp.tintColor = UIColor(hex: 0x67738F)
+        btngnv.tintColor = UIColor(hex: 0x67738F)
+        btndiesel.tintColor = UIColor(hex: 0x67738F)
+        btngRegular.tintColor = UIColor(hex: 0x67738F)
+        btngPremium.tintColor = UIColor(hex: 0x67738F)
+
+        // Activar el botón seleccionado
+        sender.backgroundColor = UIColor(hex: 0x000090)
+        sender.tintColor = UIColor.white
+        
+    }
+    
+    @IBAction func botonPresionadEstablecimiento(_ sender: UIButton) {
+        for boton in [btn10proximas, btn30proximas, btnGasolinera2km, btnGasolinera3km] {
+            boton?.backgroundColor = UIColor(hex: 0xF5F6FB)
+            boton?.tintColor = UIColor(hex: 0x67738F)
+        }
+
+        if sender == btn10proximas {
+            btn10proximas.backgroundColor = UIColor(hex: 0x000090)
+            btn10proximas.tintColor = UIColor.white
+            establecimientosKmFiltro = "20C"
+        } else if sender == btn30proximas {
+            btn30proximas.backgroundColor = UIColor(hex: 0x000090)
+            btn30proximas.tintColor = UIColor.white
+            establecimientosKmFiltro = "30C"
+        } else if sender == btnGasolinera2km {
+            btnGasolinera2km.backgroundColor = UIColor(hex: 0x000090)
+            btnGasolinera2km.tintColor = UIColor.white
+            establecimientosKmFiltro = "02K"
+        } else if sender == btnGasolinera3km {
+            btnGasolinera3km.backgroundColor = UIColor(hex: 0x000090)
+            btnGasolinera3km.tintColor = UIColor.white
+            establecimientosKmFiltro = "03K"
+        }
+        print("Valor de establecimientosKmFiltro:", establecimientosKmFiltro)
+        listarGrifos()
+
+    }
+    
+    @IBAction func botonPresionadCalificacion(_ sender: UIButton) {
+        let buttons = [btnCali1, btnCali2, btnCali3, btnCali4, btnCali5]
+        for button in buttons {
+            if let unwrappedButton = button {
+                unwrappedButton.backgroundColor = UIColor(hex: 0xF5F6FB)
+                unwrappedButton.tintColor = UIColor(hex: 0x67738F)
+            }
+        }
+
+        sender.backgroundColor = UIColor(hex: 0x000090)
+        sender.tintColor = UIColor.white
+
+        if sender == btnCali1 {
+            ratingFiltro = "1"
+        } else if sender == btnCali2 {
+            ratingFiltro = "2"
+        } else if sender == btnCali3 {
+            ratingFiltro = "3"
+        } else if sender == btnCali4 {
+            ratingFiltro = "4"
+        } else if sender == btnCali5 {
+            ratingFiltro = "5"
+        }
+        print("Valor de ratingFiltro:", ratingFiltro)
+        listarGrifos()
+    }
+    
+
+    @IBAction func borrarFiltros(_ sender: Any) {
+        ratingFiltro = "5"
+        //categoria = "010"
+        //codigoDistrito = "-"
+        self.establecimientosKmFiltro = "20C"
+        self.ubigeo = "-"
+        //tfDistrito.text = "Distritos"
+        btng84.backgroundColor =  UIColor(hex: 0xF5F6FB)
+        btnglp.backgroundColor = UIColor(hex: 0xF5F6FB)
+        btngnv.backgroundColor = UIColor(hex: 0xF5F6FB)
+        btndiesel.backgroundColor = UIColor(hex: 0xF5F6FB)
+        btngRegular.backgroundColor = UIColor(hex: 0xF5F6FB)
+        btngPremium.backgroundColor = UIColor(hex: 0xF5F6FB)
+        
+        btng84.tintColor = UIColor(hex: 0x67738F)
+        btnglp.tintColor = UIColor(hex: 0x67738F)
+        btngnv.tintColor = UIColor(hex: 0x67738F)
+        btndiesel.tintColor = UIColor(hex: 0x000090)
+        btngRegular.tintColor = UIColor(hex: 0x67738F)
+        btngPremium.tintColor = UIColor(hex: 0x67738F)
+
+        for boton in [btn10proximas, btn30proximas, btnGasolinera2km, btnGasolinera3km] {
+            boton?.backgroundColor = UIColor(hex: 0xF5F6FB)
+            boton?.tintColor = UIColor(hex: 0x67738F)
+        }
+        let buttons = [btnCali1, btnCali2, btnCali3, btnCali4, btnCali5]
+        for button in buttons {
+            if let unwrappedButton = button {
+                unwrappedButton.backgroundColor = UIColor(hex: 0xF5F6FB)
+                unwrappedButton.tintColor = UIColor(hex: 0x67738F)
+            }
+        }
+      
+        listarGrifos()
+    }
+    
+    
+    
     
 }

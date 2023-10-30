@@ -13,6 +13,7 @@ public class GrifosMenu {
     public var km: String = ""
     public var nombreProducto: String = ""
     public var precio: String = ""
+    public var precioGrifo: String = ""
 
 
 }

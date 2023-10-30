@@ -285,16 +285,14 @@ class APICaller {
         }
     }
         
-    func GettListarGrifos(_ latitud: String, _ longitud: String, completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
+    func GettListarGrifos(_ latitud: String, _ longitud: String, _ ubigeo: String, _ distancia: String, _ rating: String, completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
         
-        let categoria = "004"
-        let pordefecto = "20C"
+        let categoria = "7"
+        let pordefecto = distancia
         let numero = "-1"
-        let calificacion = "5.0"
-        let ubigeo = "-"
-
+        let calificacion = rating
         
-        let url =  "\(BASE_URL_MICROSERVICIO_ESTABLECIMIENTOS)/googleMap/listG/\(categoria)/\(latitud)/\(longitud)/\(pordefecto)/\(numero)/\(latitud)/\(longitud)/\(calificacion)/\(ubigeo)"
+        let url =  "\(BASE_URL_MICROSERVICIO_ESTABLECIMIENTOS)/googleMap/list/\(categoria)/\(latitud)/\(longitud)/\(pordefecto)/\(numero)/\(latitud)/\(longitud)/\(calificacion)/\(ubigeo)"
                         
         var urlRequest = URLRequest(url: URL(string: url)!)
         urlRequest.httpMethod = HTTPMethod.get.rawValue
