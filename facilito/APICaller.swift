@@ -901,11 +901,11 @@ class APICaller {
         }
     }
     
-    func GetListarGrifosMapa(categoria: String, latitud1: String, longitud1: String, pordefecto: String, numero: String, latitud2: String, longitud2: String, calificacion: Double, ubigeo: String, completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
+    func GetListarGrifosMapa(categoria: String, latitud1: String, longitud1: String, pordefecto: String, numero: String, latitud2: String, longitud2: String, calificacionFiltro: String, ubigeo: String, completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
         
         //let ubig = "-"
         
-        let url = "\(BASE_URL_MICROSERVICIO_ESTABLECIMIENTOS)/googleMap/list/\(categoria)/\(latitud1)/\(longitud1)/\(pordefecto)/\(numero)/\(latitud2)/\(longitud2)/\(calificacion)/\(ubigeo)"
+        let url = "\(BASE_URL_MICROSERVICIO_ESTABLECIMIENTOS)/googleMap/list/\(categoria)/\(latitud1)/\(longitud1)/\(pordefecto)/\(numero)/\(latitud2)/\(longitud2)/\(calificacionFiltro)/\(ubigeo)"
         
         var urlRequest = URLRequest(url: URL(string: url)!)
         urlRequest.httpMethod = HTTPMethod.get.rawValue

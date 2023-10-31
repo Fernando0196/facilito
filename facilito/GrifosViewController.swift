@@ -117,7 +117,7 @@ class GrifosViewController: UIViewController,CLLocationManagerDelegate {
         hViewFiltroExpan.constant = 0
         vFiltroExpan.isHidden = true
         establecimientosKmFiltro = "20C"
-        self.ratingFiltro = "5"
+        self.ratingFiltro = "-"
         locManager.delegate = self
         locManager.requestWhenInUseAuthorization() // O locManager.requestAlwaysAuthorization() según tus necesidades.
         locManager.startUpdatingLocation()
@@ -527,7 +527,7 @@ extension GrifosViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     @IBAction func borrarFiltros(_ sender: Any) {
-        ratingFiltro = "5"
+        ratingFiltro = "-"
         //categoria = "010"
         //codigoDistrito = "-"
         self.establecimientosKmFiltro = "20C"

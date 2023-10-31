@@ -126,6 +126,7 @@
 		57D75C312A69D5650002A9A0 /* favoritosCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D75C302A69D5650002A9A0 /* favoritosCell.swift */; };
 		57D75C332A69D5E10002A9A0 /* FavoritosMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D75C322A69D5E10002A9A0 /* FavoritosMenu.swift */; };
 		57D7E7282A9710A3009D0BA3 /* GrifosMapaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D7E7272A9710A3009D0BA3 /* GrifosMapaViewController.swift */; };
+		57DAC6E72AF0CC2F00E7DAEB /* IniciarRutaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DAC6E62AF0CC2F00E7DAEB /* IniciarRutaViewController.swift */; };
 		57DCD46329955EA100C4529E /* FallasProblemasViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DCD46229955EA100C4529E /* FallasProblemasViewController.swift */; };
 		57DCD465299561DB00C4529E /* fallasproblemasCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DCD464299561DB00C4529E /* fallasproblemasCell.swift */; };
 		57DCD4672995631B00C4529E /* ProblemasFallasMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DCD4662995631B00C4529E /* ProblemasFallasMenu.swift */; };
@@ -303,6 +304,7 @@
 		57D75C302A69D5650002A9A0 /* favoritosCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = favoritosCell.swift; sourceTree = "<group>"; };
 		57D75C322A69D5E10002A9A0 /* FavoritosMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritosMenu.swift; sourceTree = "<group>"; };
 		57D7E7272A9710A3009D0BA3 /* GrifosMapaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrifosMapaViewController.swift; sourceTree = "<group>"; };
+		57DAC6E62AF0CC2F00E7DAEB /* IniciarRutaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IniciarRutaViewController.swift; sourceTree = "<group>"; };
 		57DCD46229955EA100C4529E /* FallasProblemasViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FallasProblemasViewController.swift; sourceTree = "<group>"; };
 		57DCD464299561DB00C4529E /* fallasproblemasCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = fallasproblemasCell.swift; sourceTree = "<group>"; };
 		57DCD4662995631B00C4529E /* ProblemasFallasMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProblemasFallasMenu.swift; sourceTree = "<group>"; };
@@ -566,6 +568,7 @@
 				576A0DAE2ACF26CB00925E5F /* GasNaturalNoPasaViewController.swift */,
 				575E28562ACFB9630077136A /* EmpresasInstaladorasViewController.swift */,
 				577101D72AD08E0700BBC403 /* EmpresasInstaladorasDetalleViewController.swift */,
+				57DAC6E62AF0CC2F00E7DAEB /* IniciarRutaViewController.swift */,
 			);
 			path = facilito;
 			sourceTree = "<group>";
@@ -946,6 +949,7 @@
 				57220467295E035E00BB385D /* ABCInstaladorViewController.swift in Sources */,
 				57DCD46329955EA100C4529E /* FallasProblemasViewController.swift in Sources */,
 				5727BA6E299EF303001388FC /* LlamarEmpresaViewController.swift in Sources */,
+				57DAC6E72AF0CC2F00E7DAEB /* IniciarRutaViewController.swift in Sources */,
 				577101DE2AD0B61500BBC403 /* correoempresaCell.swift in Sources */,
 				57FC1E292AC0101300681CF7 /* ContratosDetalleMenu.swift in Sources */,
 				5703103E2AB8A19A002C28C8 /* balonCell.swift in Sources */,
