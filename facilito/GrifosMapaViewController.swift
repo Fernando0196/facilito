@@ -126,7 +126,6 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
         locationManager.startUpdatingLocation()
         mapView.delegate = self
         filtroDistrito = "1"
-        
 
         btnCerrarFiltro.isHidden = true
         btnCerrarFiltro.roundButton()
@@ -192,6 +191,7 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
             mapView.animate(with: GMSCameraUpdate.setCamera(camera))
         }
     }
+    
     func obtenerUbicacionActual() {
 
         if let currentLocation = locManager.location {
@@ -259,7 +259,8 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
             
             self.latitud = String(format: "%.6f", userLatitude)
             self.longitud = String(format: "%.6f", userLongitude)
-            obtenerCoordenadas()
+            self.ubigeo = "-"
+            // obtenerCoordenadas() SERVICIO EN OBSERVACIÓN
             isFirstMapLoad = false
             
         } else {
@@ -499,7 +500,7 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
                                 let latitud = Double(f.latitudGrifo) ?? 0.0
                                 let longitud = Double(f.longitudGrifo) ?? 0.0
 
-                                let customMarkerView = UIView(frame: CGRect(x: 0, y: 0, width: 180, height: 100))
+                                let customMarkerView = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 80))
 
                                 let iconImageView = UIImageView()
                                 iconImageView.contentMode = .scaleAspectFit
@@ -561,7 +562,7 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
                             
 
                         } else {
-                            self.displayMessage = json["Mensaje"].stringValue
+                            self.displayMessage = "No se pudo obtener grifos, vuelve a intentar"
                             self.performSegue(withIdentifier: "sgDM", sender: self)
                         }
                     } catch {
@@ -900,8 +901,6 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
     
     @IBAction func iniciarRuta(_ sender: Any) {
         self.performSegue(withIdentifier: "sgIniciarRuta", sender: self)
-
-        
         
     }
     
@@ -910,6 +909,12 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
             let vc = segue.destination as! IniciarRutaViewController
             vc.vMapa = self
         }
+        /*
+        if (segue.identifier == "sgDetalleGrifo") {
+            let vc = segue.destination as! ListaBalonDetalleViewController
+            vc.vBalonGasMapa = self
 
+        }
+         */
     }
 }

@@ -45,6 +45,7 @@
 		5758C7CD2A0D571300DEB8C7 /* AlumbradoPublicoMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5758C7CC2A0D571300DEB8C7 /* AlumbradoPublicoMenu.swift */; };
 		5758C7CF2A0D585000DEB8C7 /* alumbradopublicoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5758C7CE2A0D585000DEB8C7 /* alumbradopublicoCell.swift */; };
 		5758C7D12A0D744D00DEB8C7 /* SeleccionePosteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5758C7D02A0D744D00DEB8C7 /* SeleccionePosteViewController.swift */; };
+		575A69F62AF15EBB0006AE90 /* ReportarPrecioGrifoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575A69F52AF15EBB0006AE90 /* ReportarPrecioGrifoViewController.swift */; };
 		575B82912981ACFE004B2A92 /* EscanearQRViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575B82902981ACFE004B2A92 /* EscanearQRViewController.swift */; };
 		575B82932981BDD9004B2A92 /* QRViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575B82922981BDD9004B2A92 /* QRViewController.swift */; };
 		575B82952981BDFD004B2A92 /* QRInformacionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575B82942981BDFD004B2A92 /* QRInformacionViewController.swift */; };
@@ -151,6 +152,7 @@
 		57EC484C2A97CB8100E33FED /* BalonGasMapaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57EC484B2A97CB8100E33FED /* BalonGasMapaViewController.swift */; };
 		57ED8FA22A16F96600561665 /* MenuPrincipalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ED8FA12A16F96600561665 /* MenuPrincipalViewController.swift */; };
 		57F07A742AAB97AE001F7316 /* ReportarEtiquetaBalonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F07A732AAB97AE001F7316 /* ReportarEtiquetaBalonViewController.swift */; };
+		57F559B22AF445DA00F21E25 /* RutaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F559B12AF445DA00F21E25 /* RutaViewController.swift */; };
 		57F5BE692A27B192004F9571 /* UIDeviceAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F5BE682A27B192004F9571 /* UIDeviceAddress.swift */; };
 		57F893E32A8D562C00A4BB60 /* UIFloatingLabeledTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F893E22A8D562C00A4BB60 /* UIFloatingLabeledTextView.swift */; };
 		57FA7DD629F01D0100EEA799 /* GrifosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57FA7DD529F01D0100EEA799 /* GrifosViewController.swift */; };
@@ -223,6 +225,7 @@
 		5758C7CC2A0D571300DEB8C7 /* AlumbradoPublicoMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlumbradoPublicoMenu.swift; sourceTree = "<group>"; };
 		5758C7CE2A0D585000DEB8C7 /* alumbradopublicoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = alumbradopublicoCell.swift; sourceTree = "<group>"; };
 		5758C7D02A0D744D00DEB8C7 /* SeleccionePosteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeleccionePosteViewController.swift; sourceTree = "<group>"; };
+		575A69F52AF15EBB0006AE90 /* ReportarPrecioGrifoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportarPrecioGrifoViewController.swift; sourceTree = "<group>"; };
 		575B82902981ACFE004B2A92 /* EscanearQRViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EscanearQRViewController.swift; sourceTree = "<group>"; };
 		575B82922981BDD9004B2A92 /* QRViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRViewController.swift; sourceTree = "<group>"; };
 		575B82942981BDFD004B2A92 /* QRInformacionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRInformacionViewController.swift; sourceTree = "<group>"; };
@@ -332,6 +335,7 @@
 		57EC484B2A97CB8100E33FED /* BalonGasMapaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalonGasMapaViewController.swift; sourceTree = "<group>"; };
 		57ED8FA12A16F96600561665 /* MenuPrincipalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuPrincipalViewController.swift; sourceTree = "<group>"; };
 		57F07A732AAB97AE001F7316 /* ReportarEtiquetaBalonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportarEtiquetaBalonViewController.swift; sourceTree = "<group>"; };
+		57F559B12AF445DA00F21E25 /* RutaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RutaViewController.swift; sourceTree = "<group>"; };
 		57F5BE682A27B192004F9571 /* UIDeviceAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDeviceAddress.swift; sourceTree = "<group>"; };
 		57F893E22A8D562C00A4BB60 /* UIFloatingLabeledTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFloatingLabeledTextView.swift; sourceTree = "<group>"; };
 		57FA7DD529F01D0100EEA799 /* GrifosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrifosViewController.swift; sourceTree = "<group>"; };
@@ -569,6 +573,8 @@
 				575E28562ACFB9630077136A /* EmpresasInstaladorasViewController.swift */,
 				577101D72AD08E0700BBC403 /* EmpresasInstaladorasDetalleViewController.swift */,
 				57DAC6E62AF0CC2F00E7DAEB /* IniciarRutaViewController.swift */,
+				575A69F52AF15EBB0006AE90 /* ReportarPrecioGrifoViewController.swift */,
+				57F559B12AF445DA00F21E25 /* RutaViewController.swift */,
 			);
 			path = facilito;
 			sourceTree = "<group>";
@@ -985,6 +991,8 @@
 				57A24EF8299FDCBD0083C3D9 /* CalculadoraFacturacionViewController.swift in Sources */,
 				575B82952981BDFD004B2A92 /* QRInformacionViewController.swift in Sources */,
 				579C3A572950FF1900EC695F /* GasNaturalViewController.swift in Sources */,
+				57F559B22AF445DA00F21E25 /* RutaViewController.swift in Sources */,
+				575A69F62AF15EBB0006AE90 /* ReportarPrecioGrifoViewController.swift in Sources */,
 				577101DC2AD0B51A00BBC403 /* telefonosempresaCell.swift in Sources */,
 				5722046B295E0E9F00BB385D /* ProcesoCostoMenu.swift in Sources */,
 				57BA0AD028F6099000FD0F4E /* TabBar.swift in Sources */,

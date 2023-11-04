@@ -382,12 +382,9 @@ extension GrifosViewController: UITableViewDelegate, UITableViewDataSource {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "sgDetalleGrifo") {
             let vc = segue.destination as! GrifoViewController
-            //enviar datos del usuario
             vc.vGrifos = self
-            //
             
         }
-        
         if (segue.identifier == "sgDM") {
             let vc = segue.destination as! NotificacionViewController
             vc.message = self.displayMessage

@@ -46,7 +46,7 @@ class APICaller {
         self.URL_USADA = self.URL_DESARROLLO_MICROSERVICIOS
         
         
-        BASE_URL_MICROSERVICIO_GRIFOS = URL_DESARROLLO_MICROSERVICIOS + "facilito_grifo/api"
+        BASE_URL_MICROSERVICIO_GRIFOS = URL_DESARROLLO_MICROSERVICIOS + "facil_grifo/api"
         BASE_URL_MICROSERVICIO_AUTENTICACION = URL_DESARROLLO_MICROSERVICIOS + "facilito_auth/api/autenticacion"
         BASE_URL_MICORSERVICIO_USUARIO = URL_DESARROLLO_MICROSERVICIOS + "facil_usuario/api";
         BASE_URL_MICROSERVICIO_BALON_GAS = URL_DESARROLLO_MICROSERVICIOS + "facilito_balon_gas/api";
@@ -930,6 +930,93 @@ class APICaller {
     func concatenate(a: String, b: String, c: String) -> String {
         return a + b + c
     }
+    
+    func PostCalificarGrifo(correo: String, token: String, codOsinergmin: Int, tipoServicio: Int, valoracion: Int, completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
+        
+        let url = "\(BASE_URL_MICROSERVICIO_GRIFOS)/grifo/valorarGrifo"
+        
+        let payload = "{\n" +
+            "    \"valorarGrifo\": {\n" +
+            "        \"correo\": \"\(correo)\",\n" +
+            "        \"token\": \"\(token)\",\n" +
+            "        \"codOsinergmin\": \(codOsinergmin),\n" +
+            "        \"tipoServicio\": \"\(tipoServicio)\",\n" +
+            "        \"valoracion\": \(valoracion)\n" +
+            "    }\n" +
+            "}"
+        
+        debugPrint(payload)
+        
+        var urlRequest = URLRequest(url: URL(string: url)!)
+        urlRequest.httpMethod = HTTPMethod.post.rawValue
+        
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        urlRequest.httpBody = payload.data(using: String.Encoding.utf8)
+        
+        SecurityCertificateManager.sharedInstance.defaultManager.request(urlRequest)
+            .responseString { (response) in
+                if (response.error == nil) {
+                    let stringResponse: String = (String(data: response.data!, encoding: String.Encoding.utf8) as String?)!
+                    if (!stringResponse.isEmpty) {
+                        completion(true, stringResponse, response.response?.statusCode)
+                    } else {
+                        completion(false, "", -1)
+                    }
+                } else {
+                    completion(false, "", 0)
+                }
+        }
+    }
+    
+    func PostReportarGrifo(sector: String, motivo: String, asunto: String, dni: String, descripcionInconformidad: String, coordenada_x: String, coordenada_y: String, codigoUnidadOperativa: String, telefono: String, correo: String, nombre: String, apellidoPaterno: String, apellidoMaterno: String, completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
+        
+        let url = "\(BASE_URL_MICROSERVICIO_DENUNCIAS_INCORFORMIDAD)/inconformidad/registrarInconformidad"
+        
+        let payload = "{\n" +
+            "    \"inconformidad\": {\n" +
+            "        \"sector\": \"\(sector)\",\n" +
+            "        \"motivo\": \"\(motivo)\",\n" +
+            "        \"asunto\": \"\(asunto)\",\n" +
+            "        \"dni\": \"\(dni)\",\n" +
+            "        \"descripcionInconformidad\": \"\(descripcionInconformidad)\",\n" +
+            "        \"coordenada_x\": \"\(coordenada_x)\",\n" +
+            "        \"coordenada_y\": \"\(coordenada_y)\",\n" +
+            "        \"codigoUnidadOperativa\": \"\(codigoUnidadOperativa)\",\n" +
+            "        \"telefono\": \"\(telefono)\",\n" +
+            "        \"correo\": \"\(correo)\",\n" +
+            "        \"nombre\": \"\(nombre)\",\n" +
+            "        \"apellidoPaterno\": \"\(apellidoPaterno)\",\n" +
+            "        \"apellidoMaterno\": \"\(apellidoMaterno)\",\n" +
+            "        \"listaFotos\": []\n" +
+            "    }\n" +
+            "}"
+
+        
+        debugPrint(payload)
+        
+        var urlRequest = URLRequest(url: URL(string: url)!)
+        urlRequest.httpMethod = HTTPMethod.post.rawValue
+        
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        urlRequest.httpBody = payload.data(using: String.Encoding.utf8)
+        
+        SecurityCertificateManager.sharedInstance.defaultManager.request(urlRequest)
+            .responseString { (response) in
+                if (response.error == nil) {
+                    let stringResponse: String = (String(data: response.data!, encoding: String.Encoding.utf8) as String?)!
+                    if (!stringResponse.isEmpty) {
+                        completion(true, stringResponse, response.response?.statusCode)
+                    } else {
+                        completion(false, "", -1)
+                    }
+                } else {
+                    completion(false, "", 0)
+                }
+        }
+    }
+    
     
 }
 
