@@ -25,6 +25,10 @@ pod 'MaterialComponents/TextControls+OutlinedTextFields'
 pod 'Alamofire'
 pod 'GoogleMaps'
 pod 'GooglePlaces'
+pod 'GoogleSignIn'
 pod 'Cosmos', '~> 23.0'
+pod 'FacebookLogin'
+pod 'FacebookCore'
+
 
 end

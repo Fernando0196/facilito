@@ -1018,5 +1018,116 @@ class APICaller {
     }
     
     
+    func GetListarPedidos(_ idUsuario: Int, completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
+
+        
+        let url = "http://11.160.121.132:23018/facilito_rest_old/remote/pedido/listar/\(idUsuario)"
+                        
+        var urlRequest = URLRequest(url: URL(string: url)!)
+        urlRequest.httpMethod = HTTPMethod.get.rawValue
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        SecurityCertificateManager.sharedInstance.defaultManager.request(urlRequest)
+            .responseString { (response) in
+                if (response.error == nil) {
+                    let stringResponse: String = (String(data: response.data!, encoding: String.Encoding.utf8) as String?)!
+                    if (!stringResponse.isEmpty) {
+                        completion(true, stringResponse, response.response?.statusCode)
+                    } else {
+                        completion(false, "", -1)
+                    }
+                } else {
+                    completion(false, "", 0)
+                }
+        }
+    }
+    
+    func PutRegistrarCalificacion(idPedido: Int, calificacion: Int, estadoInconformidad: Int, comentario: String, nroInconformidad: String, completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
+        
+        let url = "http://11.160.121.132:23018/facilito_rest_old/remote/pedido/editar"
+        
+        let payload = "{\n" +
+            "    \"pedido\": {\n" +
+            "        \"idPedido\": \(idPedido),\n" +
+            "        \"calificacion\": \(calificacion),\n" +
+            "        \"estadoInconformidad\": \(estadoInconformidad),\n" +
+            "        \"comentario\": \"\(comentario)\",\n" +
+            "        \"nroInconformidad\": \"\(nroInconformidad)\"\n" +
+            "    }\n" +
+            "}"
+        
+        debugPrint(payload)
+        
+        var urlRequest = URLRequest(url: URL(string: url)!)
+        urlRequest.httpMethod = HTTPMethod.put.rawValue
+        
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        urlRequest.httpBody = payload.data(using: String.Encoding.utf8)
+        
+        SecurityCertificateManager.sharedInstance.defaultManager.request(urlRequest)
+            .responseString { (response) in
+                if (response.error == nil) {
+                    let stringResponse: String = (String(data: response.data!, encoding: String.Encoding.utf8) as String?)!
+                    if (!stringResponse.isEmpty) {
+                        completion(true, stringResponse, response.response?.statusCode)
+                    } else {
+                        completion(false, "", -1)
+                    }
+                } else {
+                    completion(false, "", 0)
+                }
+        }
+    }
+    
+    func PostReportarInconformidad(idSector: String, motivo: String, asunto: String, dni: String, descripcionInconformidad: String, coordenada_x: String, coordenada_y: String, codigoEmpresaEnergia: String, nroSuministro: String, telefono: String, correo: String, nombre: String, apellidoPaterno: String, apellidoMaterno: String, mesesAfectados: String, codigoCanalRegistro: String, listaUAP: String, listaFotos: [String], completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
+        
+        let url = "\(BASE_URL_MICROSERVICIO_DENUNCIAS_INCORFORMIDAD)/inconformidad/registrarInconformidad"
+
+        let payload = "{\n" +
+            "    \"sector\": \"\(idSector)\",\n" +
+            "    \"motivo\": \"\(motivo)\",\n" +
+            "    \"asunto\": \"\(asunto)\",\n" +
+            "    \"dni\": \"\(dni)\",\n" +
+            "    \"descripcionInconformidad\": \"\(descripcionInconformidad)\",\n" +
+            "    \"coordenada_x\": \"\(coordenada_x)\",\n" +
+            "    \"coordenada_y\": \"\(coordenada_y)\",\n" +
+            "    \"codigoEmpresaEnergia\": \"\(codigoEmpresaEnergia)\",\n" +
+            "    \"nroSuministro\": \"\(nroSuministro)\",\n" +
+            "    \"telefono\": \"\(telefono)\",\n" +
+            "    \"correo\": \"\(correo)\",\n" +
+            "    \"nombre\": \"\(nombre)\",\n" +
+            "    \"apellidoPaterno\": \"\(apellidoPaterno)\",\n" +
+            "    \"apellidoMaterno\": \"\(apellidoMaterno)\",\n" +
+            "    \"mesesAfectados\": \"\(mesesAfectados)\",\n" +
+            "    \"codigoCanalRegistro\": \"\(codigoCanalRegistro)\",\n" +
+            "    \"listaUAP\": \"\(listaUAP)\",\n" +
+            "    \"listaFotos\": [\(listaFotos.map { "\"\($0)\"" }.joined(separator: ","))]\n" +
+            "}"
+        
+        
+        var urlRequest = URLRequest(url: URL(string: url)!)
+        urlRequest.httpMethod = HTTPMethod.post.rawValue
+        
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        urlRequest.httpBody = payload.data(using: String.Encoding.utf8)
+        
+        SecurityCertificateManager.sharedInstance.defaultManager.request(urlRequest)
+            .responseString { (response) in
+                if (response.error == nil) {
+                    let stringResponse: String = (String(data: response.data!, encoding: String.Encoding.utf8) as String?)!
+                    if (!stringResponse.isEmpty) {
+                        completion(true, stringResponse, response.response?.statusCode)
+                    } else {
+                        completion(false, "", -1)
+                    }
+                } else {
+                    completion(false, "", 0)
+                }
+        }
+
+    }
+    
 }
 

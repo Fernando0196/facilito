@@ -51,7 +51,9 @@ class PeligrosPostesViewController: UIViewController, UITextFieldDelegate, CLLoc
     
     var nombreTipoPeligro: String = ""
     var nombreReporte: String = ""
+    var asuntoValor: String = ""
 
+    
 
     let dropDown = DropDown()
     let dropDownPeligros = DropDown()
@@ -76,6 +78,10 @@ class PeligrosPostesViewController: UIViewController, UITextFieldDelegate, CLLoc
     var foto1: String = ""
     var foto2: String = ""
     var buscarUbi: Int = 0
+    var displayMessage: String = ""
+    var displayTitle: String = "Facilito"
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -152,7 +158,18 @@ class PeligrosPostesViewController: UIViewController, UITextFieldDelegate, CLLoc
         dropDownPeligros.topOffset = CGPoint(x: 0, y: -(dropDownPeligros.anchorView?.plainView.bounds.height)!)
         dropDownPeligros.direction = .bottom
         
+        
+        
         dropDownPeligros.selectionAction = { [unowned self] (index: Int, item: String) in
+            let tipoPeligroSeleccionado = tipoPeligro[index]
+
+            if tipoPeligroSeleccionado.contains("Cable eléctrico caído o accesibles a las personas") {
+                self.asuntoValor = "52"
+            } else if tipoPeligroSeleccionado.contains("Poste caído o en peligro de caer") {
+                self.asuntoValor = "53"
+            } else if tipoPeligroSeleccionado.contains("Caja portamedidor abierta o sin tapa") {
+                self.asuntoValor = "54"
+            }
             self.btnPeligro.setTitle("" + tipoPeligro[index], for: .normal)
             //self.tfNombrePeligro.text = tiposPeligo[index]
             self.nombreTipoPeligro = tipoPeligro[index]
@@ -330,6 +347,89 @@ class PeligrosPostesViewController: UIViewController, UITextFieldDelegate, CLLoc
         self.performSegue(withIdentifier: "sgMapa", sender: self)
 
     }
+    
+    @IBAction func reportarPostesCables(_ sender: Any) {
+        
+        let idSector = "2"
+        let motivo = "1"
+        let asunto = self.asuntoValor
+        
+        
+        
+        
+        let dni = "724038844" //usuario dni
+        
+        var afectacion: String? = "1"
+        var txtAfectacion = ""
+        /*
+        if swCazaZona.isOn {
+            if let afectacion = afectacion, !afectacion.isEmpty, afectacion != "null" {
+                if afectacion == "1" {
+                    txtAfectacion = "Solo en mi casa || "
+                } else if afectacion == "2" {
+                    txtAfectacion = "En toda mi zona ||"
+                }
+            }
+        }
+        */
+        
+        let txtDireccion = tfDireccion.text
+        let txtDescripcion = tdDescripcion.text
+        let myLongitude = "-76.932584"
+        let myLatitude = "-12.220706"
+        let codigoEmpConcesionaria = "0"
+        guard let txtSuministro = tfSuministro.text, !txtSuministro.isEmpty else {
+            displayMessage = "Necesitas ingresar el número de suministro"
+            performSegue(withIdentifier: "sgDM", sender: self)
+            return
+        }
+        let telefono = "988752221" //usuario
+        let correo = "Geanz.101910@hotmail.com" //usuario
+        let txtNombre = "JEAN" //usuario
+        let apellidoPaterno = "MATOS" //usuario
+        let apellidoMaterno = "PALOMINO" //usuario
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd-MM-yyyy"
+
+        let rangoMeses = ""
+                
+        let codigoCanalRegistro = "5"
+        let listaUAP = ""
+        let listaFotos = [foto1, foto2]
+        
+        guard !idSector.isEmpty else {
+            displayMessage = "Necesitas sector"
+            performSegue(withIdentifier: "sgDM", sender: self)
+            return
+        }
+
+        showActivityIndicatorWithText(msg: "Validando...", true, 200)
+        
+        let ac = APICaller()
+        ac.PostReportarInconformidad(idSector: idSector, motivo: motivo, asunto: asunto, dni: dni, descripcionInconformidad: "\(txtAfectacion)\(String(describing: txtDireccion)) || \(String(describing: txtDescripcion))", coordenada_x: myLongitude, coordenada_y: myLatitude, codigoEmpresaEnergia: codigoEmpConcesionaria, nroSuministro: txtSuministro, telefono: telefono, correo: correo, nombre: txtNombre, apellidoPaterno: apellidoPaterno, apellidoMaterno: apellidoMaterno, mesesAfectados: rangoMeses, codigoCanalRegistro: codigoCanalRegistro, listaUAP: listaUAP, listaFotos: listaFotos) { (success, result, code) in
+            self.hideActivityIndicatorWithText()
+            
+            if success, code == 200, let dataFromString = result?.data(using: .utf8, allowLossyConversion: false) {
+                do {
+                    let json = try JSON(data: dataFromString)
+                    if json["registroInconformidadOutRO"]["resulCode"].int == 1 {
+                        self.displayMessage = "Se reportó correctamente."
+                    } else {
+                        self.displayMessage = "No se pudo reportar"
+                    }
+                } catch {
+                    self.displayMessage = "No se pudo reportar"
+                }
+            } else {
+                debugPrint("error")
+                self.displayMessage = "No se pudo registrar"
+            }
+            
+            self.performSegue(withIdentifier: "sgDM", sender: self)
+        }
+    }
+    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 

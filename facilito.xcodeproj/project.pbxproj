@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		457701C78B6C97CF6DBD05E8 /* Pods_facilito_facilitoUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DBFE3D7FB945866AAB51D3D /* Pods_facilito_facilitoUITests.framework */; };
 		5703103E2AB8A19A002C28C8 /* balonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5703103D2AB8A19A002C28C8 /* balonCell.swift */; };
+		5706561E2AF9883A00D85A4A /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 5706561D2AF9883A00D85A4A /* FirebaseAnalytics */; };
+		570656202AF9883A00D85A4A /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5706561F2AF9883A00D85A4A /* FirebaseAnalyticsSwift */; };
+		570656222AF9883A00D85A4A /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 570656212AF9883A00D85A4A /* FirebaseAuth */; };
+		570656242AF98CB200D85A4A /* PedidosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570656232AF98CB200D85A4A /* PedidosViewController.swift */; };
+		570656262AF98CEB00D85A4A /* PedidoRealizadoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570656252AF98CEB00D85A4A /* PedidoRealizadoViewController.swift */; };
 		5706A7632A0CB34F00A7C566 /* AlumbradoPublicoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5706A7622A0CB34F00A7C566 /* AlumbradoPublicoViewController.swift */; };
 		570831762ACC7D240029C4CA /* ObtenerDireccionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570831752ACC7D240029C4CA /* ObtenerDireccionViewController.swift */; };
 		570DC40F2AB4395500AB9981 /* CalificarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570DC40E2AB4395500AB9981 /* CalificarViewController.swift */; };
@@ -74,6 +79,9 @@
 		579C3A572950FF1900EC695F /* GasNaturalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 579C3A562950FF1900EC695F /* GasNaturalViewController.swift */; };
 		579C3A5F29511F7700EC695F /* GasNaturalMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 579C3A5E29511F7700EC695F /* GasNaturalMenu.swift */; };
 		579C3A612951327E00EC695F /* gasnaturalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 579C3A602951327E00EC695F /* gasnaturalCell.swift */; };
+		579E1DF52AFEA70700833B48 /* FacebookCore in Frameworks */ = {isa = PBXBuildFile; productRef = 579E1DF42AFEA70700833B48 /* FacebookCore */; };
+		579E1DF72AFEA70700833B48 /* FacebookLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 579E1DF62AFEA70700833B48 /* FacebookLogin */; };
+		579E1DF92AFEA70700833B48 /* FacebookShare in Frameworks */ = {isa = PBXBuildFile; productRef = 579E1DF82AFEA70700833B48 /* FacebookShare */; };
 		579E2E4E296893BF0009EA72 /* UIFloatingLabeledTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 579E2E4D296893BF0009EA72 /* UIFloatingLabeledTextField.swift */; };
 		57A24EF6299FD8B20083C3D9 /* ReciboExcesivoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A24EF5299FD8B20083C3D9 /* ReciboExcesivoViewController.swift */; };
 		57A24EF8299FDCBD0083C3D9 /* CalculadoraFacturacionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A24EF7299FDCBD0083C3D9 /* CalculadoraFacturacionViewController.swift */; };
@@ -116,6 +124,8 @@
 		57C1698B2A9E6DA700AF9C0C /* telefonosCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C1698A2A9E6DA700AF9C0C /* telefonosCell.swift */; };
 		57C1698D2A9E882A00AF9C0C /* horariosCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C1698C2A9E882A00AF9C0C /* horariosCell.swift */; };
 		57C1698F2A9EB99600AF9C0C /* formaspagoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C1698E2A9EB99600AF9C0C /* formaspagoCell.swift */; };
+		57C2C72C2AFAD3B300417D5A /* PedidosMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C2C72B2AFAD3B300417D5A /* PedidosMenu.swift */; };
+		57C2C72E2AFAEF9600417D5A /* pedidosCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C2C72D2AFAEF9600417D5A /* pedidosCell.swift */; };
 		57C2E8432931987F0057551D /* menuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C2E8422931987F0057551D /* menuCell.swift */; };
 		57C92862290C6FE4005EB77B /* BeneficiosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C92861290C6FE3005EB77B /* BeneficiosViewController.swift */; };
 		57C92864290C8A4F005EB77B /* ProcesoInstalacionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C92863290C8A4F005EB77B /* ProcesoInstalacionViewController.swift */; };
@@ -189,6 +199,8 @@
 		4492A36C61868E020E696A4C /* Pods-facilito.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-facilito.debug.xcconfig"; path = "Target Support Files/Pods-facilito/Pods-facilito.debug.xcconfig"; sourceTree = "<group>"; };
 		4DBFE3D7FB945866AAB51D3D /* Pods_facilito_facilitoUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_facilito_facilitoUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5703103D2AB8A19A002C28C8 /* balonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = balonCell.swift; sourceTree = "<group>"; };
+		570656232AF98CB200D85A4A /* PedidosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedidosViewController.swift; sourceTree = "<group>"; };
+		570656252AF98CEB00D85A4A /* PedidoRealizadoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedidoRealizadoViewController.swift; sourceTree = "<group>"; };
 		5706A7622A0CB34F00A7C566 /* AlumbradoPublicoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlumbradoPublicoViewController.swift; sourceTree = "<group>"; };
 		570831752ACC7D240029C4CA /* ObtenerDireccionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObtenerDireccionViewController.swift; sourceTree = "<group>"; };
 		570DC40E2AB4395500AB9981 /* CalificarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalificarViewController.swift; sourceTree = "<group>"; };
@@ -296,6 +308,8 @@
 		57C1698A2A9E6DA700AF9C0C /* telefonosCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = telefonosCell.swift; sourceTree = "<group>"; };
 		57C1698C2A9E882A00AF9C0C /* horariosCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = horariosCell.swift; sourceTree = "<group>"; };
 		57C1698E2A9EB99600AF9C0C /* formaspagoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = formaspagoCell.swift; sourceTree = "<group>"; };
+		57C2C72B2AFAD3B300417D5A /* PedidosMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PedidosMenu.swift; sourceTree = "<group>"; };
+		57C2C72D2AFAEF9600417D5A /* pedidosCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pedidosCell.swift; sourceTree = "<group>"; };
 		57C2E8422931987F0057551D /* menuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = menuCell.swift; sourceTree = "<group>"; };
 		57C92861290C6FE3005EB77B /* BeneficiosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeneficiosViewController.swift; sourceTree = "<group>"; };
 		57C92863290C8A4F005EB77B /* ProcesoInstalacionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcesoInstalacionViewController.swift; sourceTree = "<group>"; };
@@ -359,8 +373,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				570656202AF9883A00D85A4A /* FirebaseAnalyticsSwift in Frameworks */,
+				579E1DF52AFEA70700833B48 /* FacebookCore in Frameworks */,
+				579E1DF92AFEA70700833B48 /* FacebookShare in Frameworks */,
+				570656222AF9883A00D85A4A /* FirebaseAuth in Frameworks */,
 				5FF827F5979769B30FEF2961 /* Pods_facilito.framework in Frameworks */,
 				57E714DF2AC348A8003335F1 /* ArcGIS in Frameworks */,
+				579E1DF72AFEA70700833B48 /* FacebookLogin in Frameworks */,
+				5706561E2AF9883A00D85A4A /* FirebaseAnalytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -459,6 +479,7 @@
 				574500782AD050D9007CB7EB /* empresasinstCell.swift */,
 				577101DB2AD0B51A00BBC403 /* telefonosempresaCell.swift */,
 				577101DD2AD0B61500BBC403 /* correoempresaCell.swift */,
+				57C2C72D2AFAEF9600417D5A /* pedidosCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -575,6 +596,8 @@
 				57DAC6E62AF0CC2F00E7DAEB /* IniciarRutaViewController.swift */,
 				575A69F52AF15EBB0006AE90 /* ReportarPrecioGrifoViewController.swift */,
 				57F559B12AF445DA00F21E25 /* RutaViewController.swift */,
+				570656232AF98CB200D85A4A /* PedidosViewController.swift */,
+				570656252AF98CEB00D85A4A /* PedidoRealizadoViewController.swift */,
 			);
 			path = facilito;
 			sourceTree = "<group>";
@@ -632,6 +655,7 @@
 				577101D92AD0A2A500BBC403 /* EmpresasInstDetaMenu.swift */,
 				5768273E2AE70C93008BE2F4 /* PostesMenu.swift */,
 				57A4D7752AE9BA30007F7A1F /* GrifosMapaMenu.swift */,
+				57C2C72B2AFAD3B300417D5A /* PedidosMenu.swift */,
 			);
 			path = Dao;
 			sourceTree = "<group>";
@@ -657,6 +681,12 @@
 			name = facilito;
 			packageProductDependencies = (
 				57E714DE2AC348A8003335F1 /* ArcGIS */,
+				5706561D2AF9883A00D85A4A /* FirebaseAnalytics */,
+				5706561F2AF9883A00D85A4A /* FirebaseAnalyticsSwift */,
+				570656212AF9883A00D85A4A /* FirebaseAuth */,
+				579E1DF42AFEA70700833B48 /* FacebookCore */,
+				579E1DF62AFEA70700833B48 /* FacebookLogin */,
+				579E1DF82AFEA70700833B48 /* FacebookShare */,
 			);
 			productName = facilito;
 			productReference = 57DCECE128EC8AA700E91F70 /* facilito.app */;
@@ -736,6 +766,8 @@
 			mainGroup = 57DCECD828EC8AA700E91F70;
 			packageReferences = (
 				57E714DD2AC348A8003335F1 /* XCRemoteSwiftPackageReference "arcgis-runtime-ios" */,
+				5706561C2AF9883A00D85A4A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				579E1DF32AFEA70600833B48 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */,
 			);
 			productRefGroup = 57DCECE228EC8AA700E91F70 /* Products */;
 			projectDirPath = "";
@@ -978,6 +1010,7 @@
 				57C2E8432931987F0057551D /* menuCell.swift in Sources */,
 				572F371C2A0EEB7C007CBA93 /* ReporteDenunciarViewController.swift in Sources */,
 				5772FF8028F899AC00FC3E28 /* APICaller.swift in Sources */,
+				570656242AF98CB200D85A4A /* PedidosViewController.swift in Sources */,
 				57935673299F36A400D6904F /* DenunciarViewController.swift in Sources */,
 				57FA7DD629F01D0100EEA799 /* GrifosViewController.swift in Sources */,
 				57DDCF52294D1AAB00AB239C /* Menu.swift in Sources */,
@@ -1008,10 +1041,12 @@
 				577C19E12A1714AD001AE9CE /* menuprincipalCell.swift in Sources */,
 				57935677299F38D800D6904F /* denunciarCell.swift in Sources */,
 				57FC1E2B2AC0102F00681CF7 /* contratosdetalleCell.swift in Sources */,
+				57C2C72E2AFAEF9600417D5A /* pedidosCell.swift in Sources */,
 				57C92862290C6FE4005EB77B /* BeneficiosViewController.swift in Sources */,
 				577C794A2AA7A03C00ED90FD /* ReportarBalonGasViewController.swift in Sources */,
 				57C1698F2A9EB99600AF9C0C /* formaspagoCell.swift in Sources */,
 				57362D4A29F9D9E6000521CD /* GrifosMenu.swift in Sources */,
+				57C2C72C2AFAD3B300417D5A /* PedidosMenu.swift in Sources */,
 				57DCECE528EC8AA700E91F70 /* AppDelegate.swift in Sources */,
 				5706A7632A0CB34F00A7C566 /* AlumbradoPublicoViewController.swift in Sources */,
 				57107C1728EE29DE00F3B0D3 /* InvitadoViewController.swift in Sources */,
@@ -1027,6 +1062,7 @@
 				57DCECE728EC8AA700E91F70 /* SceneDelegate.swift in Sources */,
 				57E296A12ABE0C9A00ED5911 /* TramitesDetalleMenu.swift in Sources */,
 				57C0BABF29A6BA5700CC16BE /* electricidadCell.swift in Sources */,
+				570656262AF98CEB00D85A4A /* PedidoRealizadoViewController.swift in Sources */,
 				5772FF8228F8A1C700FC3E28 /* SecurityCertificateManager.swift in Sources */,
 				5737EC8A29FC361D00AE0EA9 /* TramitesMenu.swift in Sources */,
 				575E28572ACFB9630077136A /* EmpresasInstaladorasViewController.swift in Sources */,
@@ -1418,6 +1454,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		5706561C2AF9883A00D85A4A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+		579E1DF32AFEA70600833B48 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/facebook/facebook-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
 		57E714DD2AC348A8003335F1 /* XCRemoteSwiftPackageReference "arcgis-runtime-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/esri/arcgis-runtime-ios";
@@ -1429,6 +1481,36 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5706561D2AF9883A00D85A4A /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5706561C2AF9883A00D85A4A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		5706561F2AF9883A00D85A4A /* FirebaseAnalyticsSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5706561C2AF9883A00D85A4A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsSwift;
+		};
+		570656212AF9883A00D85A4A /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5706561C2AF9883A00D85A4A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		579E1DF42AFEA70700833B48 /* FacebookCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 579E1DF32AFEA70600833B48 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */;
+			productName = FacebookCore;
+		};
+		579E1DF62AFEA70700833B48 /* FacebookLogin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 579E1DF32AFEA70600833B48 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */;
+			productName = FacebookLogin;
+		};
+		579E1DF82AFEA70700833B48 /* FacebookShare */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 579E1DF32AFEA70600833B48 /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */;
+			productName = FacebookShare;
+		};
 		57E714DE2AC348A8003335F1 /* ArcGIS */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 57E714DD2AC348A8003335F1 /* XCRemoteSwiftPackageReference "arcgis-runtime-ios" */;
