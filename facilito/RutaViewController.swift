@@ -545,5 +545,11 @@ class RutaViewController:  UIViewController, CLLocationManagerDelegate, GMSMapVi
             ejecutarInicio = false
         }
     }
+    
+    @IBAction func cerrarRuta(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+
+    }
+    
 //Fin clase
 }

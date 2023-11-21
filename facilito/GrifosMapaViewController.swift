@@ -28,6 +28,7 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
     @IBOutlet weak var mapView: GMSMapView!
     @IBOutlet weak var btnLista: UIButton!
     @IBOutlet weak var btnMiUbicacion: UIButton!
+    @IBOutlet weak var btnVerDetalle: UIButton!
     
     //Combustible
     @IBOutlet weak var btng84: UIButton!
@@ -119,7 +120,8 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+
         // Configura el locationManager
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
@@ -260,7 +262,7 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
             self.latitud = String(format: "%.6f", userLatitude)
             self.longitud = String(format: "%.6f", userLongitude)
             self.ubigeo = "-"
-            // obtenerCoordenadas() SERVICIO EN OBSERVACIÓN
+            obtenerCoordenadas()
             isFirstMapLoad = false
             
         } else {
@@ -301,12 +303,12 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
                              print("codDepartamento: " + self.codDepartamento)
                              print("codProvincia: " + self.codProvincia)
                              
-                             //self.listarDistritos() REVISAR URL
-                             //self.ubigeo = "-"
+                             self.listarDistritos()
+                             self.ubigeo = "-"
                              self.listarGrifos()
                          }
                           else {
-                            self.displayMessage = json["Mensaje"].stringValue
+                              self.displayMessage = "No se pudo obetener, vuelve a intentar"
                             self.performSegue(withIdentifier: "sgDM", sender: self)
                         }
                     } catch {
@@ -345,8 +347,8 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
                         self.distritos.removeAll()
                         self.distritos.append("TODOS")
                         self.codigoDistritoMap["TODOS"] = "-"
-                        if !json["distritos"].arrayValue.isEmpty {
-                            let jRecords = json["distritos"].arrayValue
+                        if !json["distritos"]["distritos"].arrayValue.isEmpty {
+                            let jRecords = json["distritos"]["distritos"].arrayValue
                             for subJson in jRecords {
                                 let codigo = subJson["codDist"].stringValue
                                 let nombreDistrito = subJson["distrito"].stringValue.trimmingCharacters(in: .whitespaces)
@@ -365,7 +367,6 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
                                 //self.btnDistrito.setTitle(self.distritos[index] + " ", for: .normal)
                                 self.tfDistrito.text = self.distritos[index]
                                 let selectedNombreDistrito = self.distritos[index]
-                                print("Distrito seleccionado: \(self.tfDistrito.text)")
 
                                 if let selectedCodigoDistrito = codigoDistritoMap[selectedNombreDistrito] {
                                     self.codigoDistrito = selectedCodigoDistrito
@@ -375,8 +376,31 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
 
                                 }
                             }
+                            self.dropDown.selectionAction = { [unowned self] (index: Int, item: String) in
+                                self.btnDistrito.setTitle(self.distritos[index] + " ", for: .normal)
+                                let selectedNombre = self.distritos[index] // Obtiene el nombre de la empresa seleccionada
+
+                                let selectedNombreDistrito = self.distritos[index]
+
+                                if let selectedCodigoDistrito = codigoDistritoMap[selectedNombreDistrito] {
+                                    self.codigoDistrito = selectedCodigoDistrito
+                                    self.nombreDistrito = selectedNombreDistrito
+                                    print("Código del distrito seleccionado: \(self.codigoDistrito)")
+                                    filtrarPorDistrito()
+
+                                }
+                                
+                                let buttonFont = UIFont(name: "Poppins-Regular", size: 12);
+                                let attributes: [NSAttributedString.Key: Any] = [.font: buttonFont]
+                                let attributedString2 = NSAttributedString(string: selectedNombre, attributes: attributes)
+                                btnDistrito.setAttributedTitle(attributedString2, for: .normal)
+
+                                
+                            }
+                            
+                            
                         } else {
-                            self.displayMessage = json["Mensaje"].stringValue
+                            self.displayMessage = "No se pudo obtener, vuelve a intentar"
                             self.performSegue(withIdentifier: "sgDM", sender: self)
                         }
                     } catch {
@@ -767,7 +791,6 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
                 task.resume()
             }
         } else {
-            // Manejar el caso en el que no se puedan convertir las cadenas en valores Double
             print("Error: No se pudieron convertir latitud y/o longitud en Double")
         }
     }
@@ -903,18 +926,29 @@ class GrifosMapaViewController: UIViewController, CLLocationManagerDelegate, GMS
         self.performSegue(withIdentifier: "sgIniciarRuta", sender: self)
         
     }
-    
+        
+    @IBAction func verDetalle(_ sender: Any) {
+        self.performSegue(withIdentifier: "sgDetalleGrifo", sender: self)
+
+    }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "sgIniciarRuta") {
             let vc = segue.destination as! IniciarRutaViewController
             vc.vMapa = self
         }
-        /*
+
         if (segue.identifier == "sgDetalleGrifo") {
-            let vc = segue.destination as! ListaBalonDetalleViewController
-            vc.vBalonGasMapa = self
+            let vc = segue.destination as! GrifoDetalleViewController
+            vc.vGrifosMapa = self
 
         }
-         */
+
+        
     }
+    @IBAction func mostrarDistritos(_ sender: Any) {
+        dropDown.show()
+    }
+    
+    
+    
 }

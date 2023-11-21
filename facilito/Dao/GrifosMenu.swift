@@ -14,6 +14,8 @@ public class GrifosMenu {
     public var nombreProducto: String = ""
     public var precio: String = ""
     public var precioGrifo: String = ""
+    public var codigoOsinergmin: String = ""
+    public var direccion: String = ""
 
 
 }

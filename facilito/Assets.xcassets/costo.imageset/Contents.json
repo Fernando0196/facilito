@@ -1,15 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "costo.png",
+      "filename" : "coins.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "coins 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "coins 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

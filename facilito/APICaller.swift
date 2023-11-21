@@ -45,13 +45,12 @@ class APICaller {
         
         self.URL_USADA = self.URL_DESARROLLO_MICROSERVICIOS
         
-        
         BASE_URL_MICROSERVICIO_GRIFOS = URL_DESARROLLO_MICROSERVICIOS + "facil_grifo/api"
         BASE_URL_MICROSERVICIO_AUTENTICACION = URL_DESARROLLO_MICROSERVICIOS + "facilito_auth/api/autenticacion"
         BASE_URL_MICORSERVICIO_USUARIO = URL_DESARROLLO_MICROSERVICIOS + "facil_usuario/api";
         BASE_URL_MICROSERVICIO_BALON_GAS = URL_DESARROLLO_MICROSERVICIOS + "facilito_balon_gas/api";
         BASE_URL_MICROSERVICIO_ESTABLECIMIENTOS = URL_DESARROLLO_MICROSERVICIOS + "facil_locales/api";
-        BASE_URL_MICROSERVICIO_BALONCITO = URL_DESARROLLO_MICROSERVICIOS + "facilito_baloncito/api"
+        BASE_URL_MICROSERVICIO_BALONCITO = URL_DESARROLLO_MICROSERVICIOS + "facil_baloncito/api"
         BASE_URL_MICROSERVICIO_DENUNCIAS = URL_DESARROLLO_MICROSERVICIOS + "facilito_denuncia/api";
         BASE_URL_MICROSERVICIO_DENUNCIAS_INCORFORMIDAD = URL_DESARROLLO_MICROSERVICIOS + "facil_denuncia/api";
         BASE_URL_MICROSERVICIO_GAS_NATURAL = URL_DESARROLLO_MICROSERVICIOS + "facilito_gas_natural/api"
@@ -401,6 +400,30 @@ class APICaller {
     func GettDetalleBalonGas(_ codigoOsinergmin: String, completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
         
         let tipoEstablecimiento = "01"
+        
+        let url =  "\(BASE_URL_MICROSERVICIO_BALONCITO)/baloncito/localDetalle/\(codigoOsinergmin)/\(tipoEstablecimiento)"
+                        
+        var urlRequest = URLRequest(url: URL(string: url)!)
+        urlRequest.httpMethod = HTTPMethod.get.rawValue
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        SecurityCertificateManager.sharedInstance.defaultManager.request(urlRequest)
+            .responseString { (response) in
+                if (response.error == nil) {
+                    let stringResponse: String = (String(data: response.data!, encoding: String.Encoding.utf8) as String?)!
+                    if (!stringResponse.isEmpty) {
+                        completion(true, stringResponse, response.response?.statusCode)
+                    } else {
+                        completion(false, "", -1)
+                    }
+                } else {
+                    completion(false, "", 0)
+                }
+        }
+    }
+    func GettDetalleGrifo(_ codigoOsinergmin: String, completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
+        
+        let tipoEstablecimiento = "02"
         
         let url =  "\(BASE_URL_MICROSERVICIO_BALONCITO)/baloncito/localDetalle/\(codigoOsinergmin)/\(tipoEstablecimiento)"
                         
@@ -822,13 +845,22 @@ class APICaller {
         }
     }
     func PostListarDistritos( _ codDpto: String,_ codProv: String, completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
-        let url = "\(BASE_URL_MICROSERVICIO_UBIGEO)/ubigeo/listarDistrito"
-
-        let payload = "{\n" +
+        //let url = "\(BASE_URL_MICROSERVICIO_UBIGEO)/ubigeo/listarDistrito"
+        let url  = "https://facilitointegrado.osinergmin.gob.pe/facil-ubigeo/api/ubigeo/listarDistrito"
+        
+        /*let payload = "{\n" +
             "    \"codDpto\": \"\(codDpto)\",\n" +
             "    \"codProv\": \"\(codProv)\"\n" +
             "}"
-        
+        */
+        let payload = """
+        {
+            "provincia": {
+                "codDpto": "\(codDpto)",
+                "codProv": "\(codProv)"
+            }
+        }
+        """
         debugPrint(payload)
         
         var urlRequest = URLRequest(url: URL(string: url)!)
@@ -1128,6 +1160,47 @@ class APICaller {
         }
 
     }
+    
+    
+    func PostRegistrarPedido(idUsuario: Int, idUnidadOperativaPedido: Int, calificacionPedido: String, comentario: String, estadoInconformidad: Int, completion: @escaping (_ success: Bool, _ result: String?, _ errorCode: Int?) -> Void) {
+        let url = "\(BASE_URL_MICROSERVICIO_DENUNCIAS)/inconformidad/registrarInconformidad"
+
+        let payload = "{\n" +
+            "    \"pedido\": {\n" +
+            "        \"idUsuario\": \(idUsuario),\n" +
+            "        \"idUnidadOperativa\": \(idUnidadOperativaPedido),\n" +
+            "        \"calificacion\": \(calificacionPedido),\n" +
+            "        \"comentario\": \"\(comentario)\",\n" +
+            "        \"estadoInconformidad\": \"\(estadoInconformidad)\"\n" +
+            "    }\n" +
+            "}"
+
+
+        debugPrint(payload)
+        
+        var urlRequest = URLRequest(url: URL(string: url)!)
+        urlRequest.httpMethod = HTTPMethod.post.rawValue
+        
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        urlRequest.httpBody = payload.data(using: String.Encoding.utf8)
+        
+        SecurityCertificateManager.sharedInstance.defaultManager.request(urlRequest)
+            .responseString { (response) in
+                if (response.error == nil) {
+                    let stringResponse: String = (String(data: response.data!, encoding: String.Encoding.utf8) as String?)!
+                    if (!stringResponse.isEmpty) {
+                        completion(true, stringResponse, response.response?.statusCode)
+                    } else {
+                        completion(false, "", -1)
+                    }
+                } else {
+                    completion(false, "", 0)
+                }
+        }
+    }
+    
+    
     
 }
 

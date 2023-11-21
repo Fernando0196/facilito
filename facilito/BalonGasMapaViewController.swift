@@ -127,7 +127,13 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
     var distritos: [String] = []
     var nombreDistrito: String = ""
     var codigoDistrito: String = ""
+    var numeroEmpesaLLamada: String = ""
+    var idUnidadOperativaPedido: Int = 0
+    var idUnidadOperativaDetalle: Int = 0
 
+    var calificacionPedido: Double = 0.0
+
+    
     @IBOutlet weak var tfDistrito: UITextField!
     
     override func viewDidLoad() {
@@ -485,7 +491,8 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
                                 
                                 for (_, subJson) in jRecords.enumerated() {
                                     let f = BalonGasMenu()
-                                    
+
+                                    self.idUnidadOperativaPedido = subJson["idUnidadOperativa"].intValue
                                     f.codigoOsinergmin = subJson["codigoOsinergmin"].stringValue
                                     f.tituloMenu = subJson["nombreUnidad"].stringValue
                                     f.valoracion = subJson["valorMedio"].stringValue
@@ -581,9 +588,6 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
                                 if let userMarker = userLocationMarker {
                                     userMarker.map = self.mapView
                                 }
-
-
-                                
                                 
                             }
                              else {
@@ -630,7 +634,9 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
         lblKm.text = balon.km + " km"
         lblCombustible.text = balon.nombreProducto + " a: "
         lblGalon.text = " S/ " + balon.precio + " "
+        
 
+        
         let priceButton = UIButton()
         priceButton.setTitle(balon.precio, for: .normal)
         priceButton.titleLabel?.font = UIFont(name: "Poppins-Regular", size: 14)
@@ -655,6 +661,7 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
         self.valoracionEstablecimiento = balon.valoracion
         self.direccionEstablecimiento =  balon.direccion
         self.telefonoBalon = balon.telefono
+        
         return true
     }
     
@@ -729,9 +736,14 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
             let vc = segue.destination as! MenuPrincipalViewController
             //enviar datos del usuario
             vc.vIniciarSesion = self.vIniciarSesion
-   
-            
         }
+        if (segue.identifier == "sgDM") {
+            let vc = segue.destination as! NotificacionViewController
+            vc.message = self.displayMessage
+            vc.header = self.displayTitle
+        }
+        
+        
     }
     
     
@@ -743,7 +755,7 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
     }
     
 
-    @IBAction func llamar(_ sender: Any) {
+    /*@IBAction func llamar(_ sender: Any) {
         // Verifica si self.telefonoBalon no es nulo ni vacío
         if !self.telefonoBalon.isEmpty {
             self.realizarLlamada(telefono: self.telefonoBalon)
@@ -751,7 +763,7 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
             // Manejar la situación en la que self.telefonoBalon está vacío
             // Puedes mostrar un mensaje de error o tomar alguna otra acción apropiada.
         }
-    }
+    }*/
     
     @IBAction func botonPresionadoBalon(_ sender: UIButton) {
         // Desactivar todos los botones
@@ -893,6 +905,69 @@ class BalonGasMapaViewController: UIViewController, UITextFieldDelegate, CLLocat
 
         
     }
+    
+    @IBAction func llamar(_ sender: Any) {
+        if numeroEmpesaLLamada == "" {
+            self.displayMessage = "No se puede realizar la llamada"
+            self.performSegue(withIdentifier: "sgDM", sender: self)
+        } else {
+            if let url = URL(string: "tel://\(numeroEmpesaLLamada)"), UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                
+                let alertController = UIAlertController(title: "Culminó su llamada al establecimiento",
+                                                        message: "¿Se realizó un pedido?",
+                                                        preferredStyle: .alert)
+                
+                let yesAction = UIAlertAction(title: "Sí", style: .default) { _ in
+                    self.registrarPedido()
+                }
+                
+                let noAction = UIAlertAction(title: "No", style: .cancel) { _ in
+                }
+                
+                alertController.addAction(yesAction)
+                alertController.addAction(noAction)
+                self.present(alertController, animated: true, completion: nil)
+            }
+        }
+    }
+    
+    
+    func registrarPedido() {
+        
+        let idUsuario = 41912
+        let idUnidadOperativaPedido = idUnidadOperativaDetalle
+        let calificacionPedido = String(calificacionPedido)
+        let comentario = "Registro de pedido"
+        let estadoInconformidad = 0
 
+        showActivityIndicatorWithText(msg: "Registrando...", true, 200)
+        
+        let ac = APICaller()
+        ac.PostRegistrarPedido(idUsuario: idUsuario, idUnidadOperativaPedido: idUnidadOperativaPedido, calificacionPedido: calificacionPedido, comentario: comentario, estadoInconformidad: estadoInconformidad) { (success, result, code) in
+            self.hideActivityIndicatorWithText()
+            
+            if success, code == 200, let dataFromString = result?.data(using: .utf8, allowLossyConversion: false) {
+                do {
+                    let json = try JSON(data: dataFromString)
+                    if json["registroBaloncitoPedidoOutRO"]["resulCode"].int == 1 {
+                        self.displayMessage = "Una vez recibido el pedido califique el servicio desde la opción de Pedidos realizados del Menú."
+                    } else {
+                        self.displayMessage = "No se pudo registrar"
+                    }
+                } catch {
+                    self.displayMessage = "No se pudo registrar"
+                }
+            } else {
+                debugPrint("error")
+                self.displayMessage = "No se pudo registrar"
+            }
+            
+            self.performSegue(withIdentifier: "sgDM", sender: self)
+        }
+        
+
+    }
+    
     
 }

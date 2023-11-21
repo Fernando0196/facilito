@@ -61,6 +61,7 @@
 		576A0DAF2ACF26CB00925E5F /* GasNaturalNoPasaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576A0DAE2ACF26CB00925E5F /* GasNaturalNoPasaViewController.swift */; };
 		576D1AC92ABD2DF300E3C8C5 /* TramitesDetalleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576D1AC82ABD2DF300E3C8C5 /* TramitesDetalleViewController.swift */; };
 		576D1ACB2ABD2F4E00E3C8C5 /* tramitesdetalleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576D1ACA2ABD2F4E00E3C8C5 /* tramitesdetalleCell.swift */; };
+		577006F42B0417C400259F29 /* GrifoDetalleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 577006F32B0417C400259F29 /* GrifoDetalleViewController.swift */; };
 		577101D82AD08E0700BBC403 /* EmpresasInstaladorasDetalleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 577101D72AD08E0700BBC403 /* EmpresasInstaladorasDetalleViewController.swift */; };
 		577101DA2AD0A2A500BBC403 /* EmpresasInstDetaMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 577101D92AD0A2A500BBC403 /* EmpresasInstDetaMenu.swift */; };
 		577101DC2AD0B51A00BBC403 /* telefonosempresaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 577101DB2AD0B51A00BBC403 /* telefonosempresaCell.swift */; };
@@ -248,6 +249,7 @@
 		576A0DAE2ACF26CB00925E5F /* GasNaturalNoPasaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GasNaturalNoPasaViewController.swift; sourceTree = "<group>"; };
 		576D1AC82ABD2DF300E3C8C5 /* TramitesDetalleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TramitesDetalleViewController.swift; sourceTree = "<group>"; };
 		576D1ACA2ABD2F4E00E3C8C5 /* tramitesdetalleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tramitesdetalleCell.swift; sourceTree = "<group>"; };
+		577006F32B0417C400259F29 /* GrifoDetalleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrifoDetalleViewController.swift; sourceTree = "<group>"; };
 		577101D72AD08E0700BBC403 /* EmpresasInstaladorasDetalleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmpresasInstaladorasDetalleViewController.swift; sourceTree = "<group>"; };
 		577101D92AD0A2A500BBC403 /* EmpresasInstDetaMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmpresasInstDetaMenu.swift; sourceTree = "<group>"; };
 		577101DB2AD0B51A00BBC403 /* telefonosempresaCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = telefonosempresaCell.swift; sourceTree = "<group>"; };
@@ -598,6 +600,7 @@
 				57F559B12AF445DA00F21E25 /* RutaViewController.swift */,
 				570656232AF98CB200D85A4A /* PedidosViewController.swift */,
 				570656252AF98CEB00D85A4A /* PedidoRealizadoViewController.swift */,
+				577006F32B0417C400259F29 /* GrifoDetalleViewController.swift */,
 			);
 			path = facilito;
 			sourceTree = "<group>";
@@ -1091,6 +1094,7 @@
 				57C1698D2A9E882A00AF9C0C /* horariosCell.swift in Sources */,
 				575B82912981ACFE004B2A92 /* EscanearQRViewController.swift in Sources */,
 				57DD7E5C296DCEE400548EC9 /* CalculadoraViewController.swift in Sources */,
+				577006F42B0417C400259F29 /* GrifoDetalleViewController.swift in Sources */,
 				57DCD4672995631B00C4529E /* ProblemasFallasMenu.swift in Sources */,
 				5724B4072A1C011500748E4E /* ActualizarDatosViewController.swift in Sources */,
 				570831762ACC7D240029C4CA /* ObtenerDireccionViewController.swift in Sources */,

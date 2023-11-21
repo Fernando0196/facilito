@@ -52,7 +52,7 @@ class LlamarEmpresaViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        btnReportes.roundButton()
         btnBack.roundButton()
         btnOsinergmin.roundButton()
         btnElectro.roundButton()

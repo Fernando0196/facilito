@@ -13,8 +13,10 @@ import DropDown
 
 class ReportarPrecioGrifoViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
+    var vGrifosDetalle: GrifoDetalleViewController!
+
     
-    
+    @IBOutlet weak var tvPrecioGalon: UITextView!
     @IBOutlet weak var vReporte: UIView!
     @IBOutlet weak var tfPrecio: UIFloatingLabeledTextField!
     
@@ -36,7 +38,17 @@ class ReportarPrecioGrifoViewController: UIViewController, UITextFieldDelegate, 
     @IBOutlet weak var btnCancel1: UIButton!
     @IBOutlet weak var btnCancel2: UIButton!
  
-   
+    @IBOutlet weak var vReporteDetalle: UIView!
+    @IBOutlet weak var vReporteRealizado: UIView!
+    @IBOutlet weak var btnIrInicio: UIButton!
+    @IBOutlet weak var tvResultado: UITextView!
+    @IBOutlet weak var btnRegresar: UIButton!
+    @IBOutlet weak var btnContinuar: UIButton!
+    
+    @IBOutlet weak var lblAsunto: UILabel!
+    @IBOutlet weak var lblDireccion: UILabel!
+    @IBOutlet weak var lblEmpresa: UILabel!
+    @IBOutlet weak var lblDescripcion: UILabel!
     
     var initialY: CGFloat = 0.0 // Guarda la posición inicial de la vista
     var isViewVisible = true // Controla si la vista está visible o no
@@ -48,14 +60,25 @@ class ReportarPrecioGrifoViewController: UIViewController, UITextFieldDelegate, 
     
     var displayMessage: String = ""
     var displayTitle: String = "Facilito"
-    
+    var direccionEmpresa: String = ""
+    var nombreEmpresa: String = ""
+
     var archivo1: String = ""
     var archivo2 : String = ""
+    
+    
+    
+    
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        btnRegresar.roundButton()
+        btnContinuar.roundButton()
+        btnIrInicio.roundButton()
+        vReporteRealizado.roundView()
         btnCancel1.isHidden = true
         btnCancel2.isHidden = true
         vImagen2.isHidden = true
@@ -80,7 +103,7 @@ class ReportarPrecioGrifoViewController: UIViewController, UITextFieldDelegate, 
         dropDown.direction = .bottom
         dropDown.selectionAction = { [unowned self] (index: Int, item: String) in
             // Establecer el texto del botón con la fuente y tamaño de fuente deseados
-            let fontSize: CGFloat = 14
+            let fontSize: CGFloat = 12
             let font = UIFont(name: "Poppins-Regular", size: fontSize)
             let attributes = [NSAttributedString.Key.font: font]
             let attributedText = NSAttributedString(string: item, attributes: attributes)
@@ -90,6 +113,11 @@ class ReportarPrecioGrifoViewController: UIViewController, UITextFieldDelegate, 
             print(self.nombreCombustible)
 
         }
+        
+        self.tvPrecioGalon.text = self.vGrifosDetalle.precio + " para /Galón"
+        vReporteDetalle.isHidden = true
+        vReporteRealizado.isHidden = true
+
     }
     
     @IBAction func mostrarPesos(_ sender: Any) {
@@ -252,21 +280,52 @@ class ReportarPrecioGrifoViewController: UIViewController, UITextFieldDelegate, 
     
     
     @IBAction func reportarGrifo(_ sender: Any) {
-        
+        guard let precioGalon = tfPrecio.text, !precioGalon.isEmpty else {
+            self.displayMessage = "Debes completar el campo de Precio a reportar"
+            self.performSegue(withIdentifier: "sgDM", sender: self)
+            return
+        }
+        guard let descripcion = tvDescripcion.text, !descripcion.isEmpty else {
+            self.displayMessage = "Debes completar el campo de Descripción"
+            self.performSegue(withIdentifier: "sgDM", sender: self)
+            return
+        }
+
+        // Configurar la sombra
+        vReporteDetalle.layer.shadowColor = UIColor.black.cgColor
+        vReporteDetalle.layer.shadowOpacity = 0.3
+        vReporteDetalle.layer.shadowOffset = CGSize(width: 0, height: 4)
+        vReporteDetalle.layer.shadowRadius = 8
+
+        vReporteDetalle.isHidden = false
+        lblAsunto.text = "El precio publicado en Facilito es: "
+        lblDireccion.text = self.vGrifosDetalle.lblDIreccion.text
+        lblEmpresa.text = self.vGrifosDetalle.lblNombre.text
+        lblDescripcion.text = self.tvDescripcion.text
+    }
+    
+    
+    @IBAction func continuarReporte(_ sender: Any) {
+                
+        lblAsunto.text = "El precio publicado en Facilito es: "
+        lblDireccion.text = self.vGrifosDetalle.direccionEstablecimiento
+        lblEmpresa.text = self.vGrifosDetalle.nombreEstablecimiento
+        lblDescripcion.text = self.tvDescripcion.text
+
         let sector = "6"
         let motivo = "8"
         let asunto = "125"
         let dni = "724038844"
         let descripcionInconformidad = tvDescripcion.text ?? ""
-        let coordenada_x = "-76.932584"
-        let coordenada_y = "-12.220706"
+        let coordenada_x = self.vGrifosDetalle.latitud
+        let coordenada_y = self.vGrifosDetalle.longitud
         let codigoUnidadOperativa = "21024"
         let telefono = "988752221"
         let correo = "Geanz.101910@hotmail.com"
         let nombre = "JEAN"
         let apellidoPaterno = "MATOS"
         let apellidoMaterno = "PALOMINO"
-
+        
         self.showActivityIndicatorWithText(msg: "Reportando...", true, 200)
         let ac = APICaller()
         ac.PostReportarGrifo(sector: sector, motivo: motivo, asunto: asunto, dni: dni, descripcionInconformidad: descripcionInconformidad, coordenada_x: coordenada_x, coordenada_y: coordenada_y, codigoUnidadOperativa: codigoUnidadOperativa, telefono: telefono, correo: correo, nombre: nombre, apellidoPaterno: apellidoPaterno, apellidoMaterno: apellidoMaterno) { (success, result, code) in
@@ -278,7 +337,11 @@ class ReportarPrecioGrifoViewController: UIViewController, UITextFieldDelegate, 
                         let json = try JSON(data: dataFromString)
 
                         if (json["registroInconformidadOutRO"]["resultCode"].intValue == 1) {
-                            self.performSegue(withIdentifier: "sgPrincipal", sender: self)
+                            self.vReporte.isHidden = true
+                            self.vReporteDetalle.isHidden = true
+                            self.vReporteRealizado.isHidden = false
+                            self.tvResultado.text = "Esta información nos ayuda a mejorar los servicios y la vida de otros usuarios.\n\nReporte N° " + json["registroInconformidadOutRO"]["nroInconformidad"].stringValue + " \n\nPueder ver el estado de tu reporte en la sección de Trámites"
+
                         } else {
                             self.displayMessage = "No se pudo reportar"
                             self.performSegue(withIdentifier: "sgDM", sender: self)
@@ -297,10 +360,26 @@ class ReportarPrecioGrifoViewController: UIViewController, UITextFieldDelegate, 
                 self.performSegue(withIdentifier: "sgDM", sender: self)
             }
         }
+        
     }
     
+    @IBAction func regresar(_ sender: Any) {
+        vReporteDetalle.isHidden = true
+    }
     
+    @IBAction func irInicio(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+
+    }
     
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if (segue.identifier == "sgDM") {
+            let vc = segue.destination as! NotificacionViewController
+            vc.message = self.displayMessage
+            vc.header = self.displayTitle
+        }
+
+
+    }
 //Fin clase
 }

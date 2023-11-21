@@ -28,6 +28,12 @@ class grifosCell : UITableViewCell {
     var precioMay: String = ""
     var precioMen: String = ""
 
+    var codigoOsinergmin: String = ""
+    var nombreEstablecimiento: String = ""
+    var valoracionEstablecimiento: String = ""
+    var direccionEstablecimiento: String = ""
+    var establecimientosKmFiltro: String = ""
+    var ratingFiltro: String = ""
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)

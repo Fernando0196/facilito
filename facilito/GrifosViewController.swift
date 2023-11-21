@@ -80,6 +80,11 @@ class GrifosViewController: UIViewController,CLLocationManagerDelegate {
     var precioMenor: String = ""
     var precioGrifo: String = ""
     
+    var codigoOsinergmin: String = ""
+    var nombreEstablecimiento: String = ""
+    var valoracionEstablecimiento: String = ""
+    var direccionEstablecimiento: String = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -243,13 +248,14 @@ class GrifosViewController: UIViewController,CLLocationManagerDelegate {
                              
                              for (_, subJson): (String, JSON) in jRecords {
                                  let f = GrifosMenu()
-                                 
+                                 f.codigoOsinergmin = subJson["codigoOsinergmin"].stringValue
                                  f.tituloMenu = subJson["nombreUnidad"].stringValue
                                  f.valoracion = subJson["valorMedio"].stringValue
                                  f.km = subJson["distanciaKm"].stringValue
                                  f.nombreProducto = subJson["nombreProducto"].stringValue
                                  f.precio = "S/ " + subJson["precio"].stringValue
                                  f.precioGrifo = subJson["precio"].stringValue
+                                 f.direccion = subJson["direccion"].stringValue
 
                                  if self.precioMenor >= subJson["precio"].stringValue {
                                      self.precioMenor = subJson["precio"].stringValue
@@ -374,6 +380,11 @@ extension GrifosViewController: UITableViewDelegate, UITableViewDataSource {
     @objc func btnSeleccionarMenuPressed(_ sender: UIButton) {
         sender.preventRepeatedPresses()
         self.df = self.grifos[sender.tag]
+        self.codigoOsinergmin = self.df.codigoOsinergmin
+        self.nombreEstablecimiento = self.df.tituloMenu
+        self.valoracionEstablecimiento = self.df.valoracion
+        self.direccionEstablecimiento =  self.df.direccion
+        self.precioGrifo = self.df.precio
         self.performSegue(withIdentifier: "sgDetalleGrifo", sender: self)
 
 
@@ -381,7 +392,7 @@ extension GrifosViewController: UITableViewDelegate, UITableViewDataSource {
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "sgDetalleGrifo") {
-            let vc = segue.destination as! GrifoViewController
+            let vc = segue.destination as! GrifoDetalleViewController
             vc.vGrifos = self
             
         }
